@@ -1,1 +1,1 @@
-/// <reference types="next" />
+delete next-env.d.ts (blanked out)
