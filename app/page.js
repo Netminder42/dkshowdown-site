@@ -1,19 +1,15 @@
-export default function Home() {
+export default function PremiumPage() {
   return (
     <main style={{ padding: "2rem", fontFamily: "Arial, sans-serif" }}>
-      <h1 style={{ color: "#234F1E" }}>DK Showdown Expert</h1>
-      <p>
-        Your trusted source for daily DraftKings <strong>Showdown</strong>, <strong>Tiers</strong>,
-        and <strong>Classic</strong> lineup picks.
-      </p>
+      <h1 style={{ color: "#234F1E" }}>Premium Member Content</h1>
+      <p>Thanks for subscribing!</p>
       <ul>
-        <li>✅ Daily expert picks</li>
-        <li>✅ Markdown-powered pick editor</li>
-        <li>✅ Premium content & leaderboard</li>
+        <li>✅ Full showdown, classic, and tiers picks</li>
+        <li>✅ AI assistant (coming soon)</li>
+        <li>✅ Leaderboard & pick tracker</li>
+        <li>✅ Discord premium access</li>
       </ul>
-      <p>
-        Visit <strong>/picks</strong> to view today's plays, or <strong>/premium</strong> to subscribe.
-      </p>
+      <p>More premium tools and insights coming soon.</p>
     </main>
   );
 }
