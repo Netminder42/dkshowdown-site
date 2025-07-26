@@ -1,18 +1,21 @@
 export default function PicksPage() {
   return (
     <main style={{ padding: "2rem", fontFamily: "Arial, sans-serif" }}>
-      <h1>Today's Picks</h1>
-      <p>Expert Showdown, Tiers, and Classic picks will appear here daily.</p>
-
+      <h1 style={{ color: "#234F1E" }}>Today's Picks</h1>
+      <p>
+        Daily DraftKings showdown, tiers, and classic lineup advice will appear here.
+      </p>
       <ul>
-        <li><strong>NFL:</strong> [placeholder]</li>
-        <li><strong>MLB:</strong> [placeholder]</li>
-        <li><strong>NBA:</strong> [placeholder]</li>
-        <li><strong>EPL:</strong> [placeholder]</li>
-        <li><strong>NHL:</strong> [placeholder]</li>
+        <li>🏀 NBA - Coming soon</li>
+        <li>🏈 NFL - Coming soon</li>
+        <li>⚾ MLB - In-season updates</li>
+        <li>🏒 NHL - Coming soon</li>
+        <li>⚽ Premier League - Coming soon</li>
       </ul>
-
-      <p>Premium subscribers get AI insights, tier picks, and full breakdowns.</p>
+      <p>
+        Subscribe to access full premium breakdowns and AI-generated lineup ideas.
+      </p>
     </main>
   );
 }
+
