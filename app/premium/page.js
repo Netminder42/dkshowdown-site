@@ -1,13 +1,13 @@
-// app/premium/page.js
+// app/page.js
 
-import PremiumTools from '../../components/PremiumTools';
+import HomeContent from '../components/HomeContent';
+import FreePickTeaser from '../components/FreePickTeaser';
 
-export default function PremiumPage() {
+export default function HomePage() {
   return (
-    <main className="premium">
-      <h1>Welcome, Premium Member!</h1>
-      <p>Thank you for subscribing to RosterBrain.</p>
-      <PremiumTools />
+    <main>
+      <HomeContent />
+      <FreePickTeaser />
     </main>
   );
 }
