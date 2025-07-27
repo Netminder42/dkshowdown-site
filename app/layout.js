@@ -1,17 +1,18 @@
+// app/layout.js
+
+import '../styles/globals.css';
+
 export const metadata = {
-  title: 'DK Showdown Expert',
-  description: 'Daily DraftKings showdown, tiers, and classic lineup help.',
+  title: 'RosterBrain – AI DFS Lineup Tools for DraftKings & FanDuel',
+  description: 'The only platform offering Classic, Showdown & Tiers picks daily. AI-powered, data-driven, and built by a real player.',
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body style={{ margin: 0, backgroundColor: "#f5f5f5" }}>
-        <header style={{ background: "#234F1E", color: "#fff", padding: "1rem" }}>
-          <h2>DK Showdown Expert</h2>
-        </header>
-        {children}
-      </body>
+      <head />
+      <body>{children}</body>
     </html>
   );
 }
+
