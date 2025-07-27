@@ -1,27 +1,36 @@
-import React from 'react';
-import styles from './page.module.css';
-
-export default function HomePage() {
+export default function Home() {
   return (
-    <main className={styles.container}>
-      <h1 className={styles.title}>DK Showdown Expert</h1>
-      <p className={styles.subtitle}>
-        The only platform built for <strong>Showdown</strong>, <strong>Tiers</strong>, and <strong>Classic</strong> DFS Tools — with smart AI features to help you win more.
-      </p>
+    <div className="homepage">
+      <header className="navbar">
+        <div className="logo">DK Showdown Expert</div>
+        <nav>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/premium">Premium</a></li>
+            <li><a href="#">Tools</a></li>
+            <li><a href="#">Picks</a></li>
+            <li><a href="#">About</a></li>
+          </ul>
+        </nav>
+      </header>
 
-      <section className={styles.section}>
+      <main className="hero">
+        <h1>The only platform built for Showdown, Tiers, and Classic DFS Tools</h1>
+        <p>With smart AI features to help you win more.</p>
+        <a className="cta" href="/premium">Become a Premium Member</a>
+      </main>
+
+      <section className="features">
         <h2>🔥 What We Offer</h2>
-        <ul className={styles.list}>
+        <ul>
           <li>✅ Daily AI-Enhanced Lineup Picks</li>
           <li>✅ Tools for Showdown, Tiers & Classic</li>
           <li>✅ Historical Player Data & Projections</li>
           <li>✅ Free Teaser Pick of the Day</li>
         </ul>
-      </section>
 
-      <section className={styles.section}>
         <h2>🚀 Coming Soon</h2>
-        <ul className={styles.list}>
+        <ul>
           <li>⭐ Interactive AI Assistant for Premium Members</li>
           <li>⭐ DFS Pick Scorecard Tracker</li>
           <li>⭐ Weather & Vegas Line-Based Projections</li>
@@ -29,10 +38,10 @@ export default function HomePage() {
         </ul>
       </section>
 
-      <footer className={styles.footer}>
-        Designed by respected DFS player <strong>Netminder42</strong>
+      <footer className="footer">
+        <p>Designed by respected DFS player <strong>Netminder42</strong></p>
       </footer>
-    </main>
+    </div>
   );
 }
 

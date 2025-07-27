@@ -66,4 +66,96 @@ body {
 .teaser-picks {
   margin-top: 3rem;
 }
+/* --- Homepage Styles --- */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(to right, #111827, #1f2937);
+  color: #f9fafb;
+}
+
+.homepage {
+  padding: 20px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 15px;
+  padding: 0;
+  margin: 0;
+}
+
+nav a {
+  text-decoration: none;
+  color: #f9fafb;
+  font-weight: 500;
+}
+
+.hero {
+  text-align: center;
+  padding: 60px 20px 30px;
+}
+
+.hero h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.hero p {
+  font-size: 1.25rem;
+  margin-bottom: 20px;
+}
+
+.cta {
+  display: inline-block;
+  padding: 12px 24px;
+  background: #10b981;
+  color: #111827;
+  font-weight: bold;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: background 0.3s ease;
+}
+
+.cta:hover {
+  background: #059669;
+}
+
+.features {
+  padding: 30px 0;
+}
+
+.features h2 {
+  margin-top: 30px;
+  font-size: 1.5rem;
+}
+
+.features ul {
+  list-style: none;
+  padding-left: 0;
+  line-height: 1.8;
+}
+
+.footer {
+  text-align: center;
+  padding: 20px;
+  margin-top: 40px;
+  font-size: 0.9rem;
+  border-top: 1px solid #374151;
+}
 
