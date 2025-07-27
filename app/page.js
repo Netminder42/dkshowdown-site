@@ -1,38 +1,35 @@
-// app/page.js
-
-export default function HomePage() {
+export default function Home() {
   return (
-    <main className="homepage-container">
-      <header className="hero-header">
-        <h1>RosterBrain</h1>
-        <p>The only DFS platform featuring Showdown, Tiers, and Classic lineups — powered by AI.</p>
-        <a className="cta-button" href="/premium">Subscribe Now</a>
-      </header>
+    <main className="home">
+      <div className="hero">
+        <h1>DK Showdown Expert</h1>
+        <p>The only platform built for Showdown, Tiers, and Classic DFS Tools — with smart AI features to help you win more.</p>
+      </div>
 
-      <section className="features-grid">
-        <div className="feature-tile">
-          <h3>🧠 AI-Driven Tools</h3>
-          <p>Lineup generators, projections, and matchups — tailored to your preferences.</p>
-        </div>
-        <div className="feature-tile">
-          <h3>🏆 Showdown & Tiers Edge</h3>
-          <p>We built this for single-game grinders. Get the insights no one else offers.</p>
-        </div>
-        <div className="feature-tile">
-          <h3>📊 Data That Wins</h3>
-          <p>Historic performance trends, split stats, and Vegas lines — visualized for clarity.</p>
-        </div>
-      </section>
-
-      <section className="teaser-picks">
-        <h2>Today's Featured Picks (Preview)</h2>
+      <section className="section highlight">
+        <h2>🔥 What We Offer</h2>
         <ul>
-          <li>MLB: Shohei Ohtani – Captain (Showdown)</li>
-          <li>NFL: Josh Allen – Elite Stack (Tiers)</li>
-          <li>EPL: Haaland – Goal + Shots Bonus</li>
+          <li>✅ Daily AI-Enhanced Lineup Picks</li>
+          <li>✅ Tools for Showdown, Tiers & Classic</li>
+          <li>✅ Historical Player Data & Projections</li>
+          <li>✅ Free Teaser Pick of the Day</li>
         </ul>
-        <a href="/premium" className="cta-button-secondary">Unlock All Picks</a>
       </section>
+
+      <section className="section coming-soon">
+        <h2>🚀 Coming Soon</h2>
+        <ul>
+          <li>⭐ Interactive AI Assistant for Premium Members</li>
+          <li>⭐ DFS Pick Scorecard Tracker</li>
+          <li>⭐ Weather & Vegas Line-Based Projections</li>
+          <li>⭐ Premium Discord Access</li>
+        </ul>
+      </section>
+
+      <footer className="footer">
+        <p>Designed by respected DFS player <strong>Netminder42</strong></p>
+      </footer>
     </main>
   );
 }
+
