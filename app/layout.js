@@ -1,10 +1,6 @@
-// app/layout.js
-
-import './globals.css';
-
 export const metadata = {
   title: 'DK Showdown Expert',
-  description: 'AI-powered tools for Showdown, Tiers, and Classic DFS',
+  description: 'AI-powered tools for Showdown, Tiers, and Classic DFS players.',
 };
 
 export default function RootLayout({ children }) {
@@ -13,7 +9,9 @@ export default function RootLayout({ children }) {
       <head>
         <link rel="icon" href="/favicon.ico" />
       </head>
-      <body>{children}</body>
+      <body style={{ margin: 0, fontFamily: 'sans-serif', backgroundColor: '#f5f5f5' }}>
+        {children}
+      </body>
     </html>
   );
 }
