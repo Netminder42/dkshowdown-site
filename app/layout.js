@@ -1,18 +1,19 @@
+// app/layout.js
 export const metadata = {
   title: 'DK Showdown Expert',
-  description: 'AI-powered tools for Showdown, Tiers, and Classic DFS players.',
+  description: 'The only DFS site with AI-powered tools for Showdown, Tiers, and Classic',
+  icons: {
+    icon: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <head>
-        <link rel="icon" href="/favicon.ico" />
-      </head>
-      <body style={{ margin: 0, fontFamily: 'sans-serif', backgroundColor: '#f5f5f5' }}>
-        {children}
-      </body>
+      <head />
+      <body>{children}</body>
     </html>
   );
 }
+
 
