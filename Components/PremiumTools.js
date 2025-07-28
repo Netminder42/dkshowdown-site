@@ -1,17 +1,21 @@
-// components/PremiumTools.js
+import React from 'react';
 
-export default function PremiumTools() {
+const PremiumTools = () => {
   return (
-    <section className="premium-tools">
-      <h2>Your Tools</h2>
-      <ul>
-        <li>✅ AI-Generated Lineups (Classic, Showdown, Tiers)</li>
-        <li>✅ Player Matchup & Stack Tools</li>
-        <li>✅ Real-Time Game Data Integration</li>
-        <li>✅ Historical Performance Tracker</li>
-        <li>✅ Discord Access + Priority Support</li>
+    <section style={{ backgroundColor: '#111827', color: '#fff', padding: '2rem', borderRadius: '10px', marginTop: '2rem' }}>
+      <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>💎 Premium Member Tools</h2>
+      <ul style={{ listStyle: 'none', paddingLeft: 0, lineHeight: '1.8' }}>
+        <li>🤖 Interactive AI Assistant — Ask anything DFS</li>
+        <li>📈 AI-Backed Daily Picks & Insights</li>
+        <li>🧩 Advanced Lineup Optimizer</li>
+        <li>📝 Custom Tier & Showdown Strategies</li>
+        <li>📉 Player Regression/Breakout Alerts</li>
+        <li>🔒 Private Discord Access</li>
+        <li>📊 Live Scorecard Tracker for Your Picks</li>
       </ul>
-      <p>More features are being added daily. Stay tuned!</p>
     </section>
   );
-}
+};
+
+export default PremiumTools;
+
