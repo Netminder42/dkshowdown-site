@@ -1,4 +1,5 @@
 import React from 'react';
+import ToolsShowcase from './ToolsShowcase';
 
 export default function HomeContent() {
   return (
@@ -14,6 +15,7 @@ export default function HomeContent() {
       <p style={{ fontSize: '1.25rem', marginBottom: '1.5rem', color: '#444' }}>
         The only platform built specifically for <strong>Showdown, Tiers, and Classic DFS tools</strong> — enhanced with smart AI features to help you win more.
       </p>
+<ToolsShowcase />
 
       <h2 style={{ color: '#2b6cb0' }}>🔥 What We Offer</h2>
       <ul>
