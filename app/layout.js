@@ -1,4 +1,4 @@
-import SessionProvider from '@/Components/SessionProvider'
+import SessionProvider from '@/components/SessionProvider'
 import { Toaster } from 'react-hot-toast'
 import '@/styles/globals.css'
 

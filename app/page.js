@@ -1,6 +1,6 @@
 'use client'
 
-import Navigation from '@/Components/Navigation'
+import Navigation from '@/components/Navigation'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'

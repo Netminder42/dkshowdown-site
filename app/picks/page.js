@@ -3,10 +3,10 @@
 import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { useSearchParams } from 'next/navigation'
-import Navigation from '@/Components/Navigation'
+import Navigation from '@/components/Navigation'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
-import { PickCardSkeleton } from '@/Components/LoadingSkeletons'
+import { PickCardSkeleton } from '@/components/LoadingSkeletons'
 
 export default function Picks() {
   const { data: session } = useSession()

@@ -1,9 +1,9 @@
 'use client'
 
-import { use Effect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import Navigation from '@/Components/Navigation'
+import Navigation from '@/components/Navigation'
 import { motion } from 'framer-motion'
 import {
   UserCircleIcon,
@@ -12,7 +12,7 @@ import {
   ShieldCheckIcon,
   ArrowRightIcon
 } from '@heroicons/react/24/outline'
-import { FullPageLoader } from '@/Components/LoadingSkeletons'
+import { FullPageLoader } from '@/components/LoadingSkeletons'
 import toast from 'react-hot-toast'
 import { getTrialDaysLeft } from '@/lib/utils'
 

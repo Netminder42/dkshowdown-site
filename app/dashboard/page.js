@@ -3,7 +3,7 @@
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import Navigation from '@/Components/Navigation'
+import Navigation from '@/components/Navigation'
 import toast from 'react-hot-toast'
 
 export default function Dashboard() {

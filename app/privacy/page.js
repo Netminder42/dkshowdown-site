@@ -1,6 +1,6 @@
 'use client'
 
-import Navigation from '@/Components/Navigation'
+import Navigation from '@/components/Navigation'
 import { motion } from 'framer-motion'
 
 export default function Privacy() {
