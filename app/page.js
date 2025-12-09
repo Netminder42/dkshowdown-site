@@ -10,17 +10,25 @@ export default function Home() {
     <div className="min-h-screen bg-[#F9FAFB]">
       <NavigationNew />
 
-      {/* Hero Section */}
-      <section className="py-20 lg:py-28">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Left Column */}
-            <div>
-              <h1 className="text-5xl lg:text-6xl font-bold text-[#111827] leading-tight mb-6">
+      {/* Hero Section - NFL Action Background */}
+      <section className="relative overflow-hidden">
+        {/* Background Image with Overlay */}
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.15), rgba(0,0,0,0.35)), url('https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=2000&auto=format&fit=crop')`,
+          }}
+        />
+
+        {/* Hero Content */}
+        <div className="relative z-10 py-24 lg:py-32">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="max-w-3xl">
+              <h1 className="text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
                 Pro-grade DFS tools. <br />
-                <span className="text-[#1E3A8A]">No PhD required.</span>
+                No PhD required.
               </h1>
-              <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+              <p className="text-xl text-white/95 mb-8 leading-relaxed">
                 Build sharper DraftKings and FanDuel lineups with LineupIQ — your AI engine for slate sims, optimizers, and DFS strategy.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
@@ -32,18 +40,10 @@ export default function Home() {
                 </Link>
                 <Link
                   href="#todays-slate"
-                  className="bg-white hover:bg-gray-50 text-[#1E3A8A] font-semibold px-8 py-4 rounded-lg text-center transition border-2 border-[#1E3A8A]"
+                  className="bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white font-semibold px-8 py-4 rounded-lg text-center transition border-2 border-white/50"
                 >
                   View Today's Slate
                 </Link>
-              </div>
-            </div>
-
-            {/* Right Column - Placeholder */}
-            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-8 aspect-video flex items-center justify-center">
-              <div className="text-center text-gray-400">
-                <ChartBarIcon className="h-24 w-24 mx-auto mb-4" />
-                <p className="text-sm">Product Screenshot Coming Soon</p>
               </div>
             </div>
           </div>
@@ -51,9 +51,9 @@ export default function Home() {
       </section>
 
       {/* Today's Slate Strip */}
-      <section id="todays-slate" className="py-16 bg-white">
+      <section id="todays-slate" className="py-16 bg-white border-t border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-[#111827] mb-8">Today's Slate</h2>
+          <h2 className="text-3xl font-bold text-[#1E3A8A] mb-8">Today's Slate</h2>
 
           <div className="overflow-x-auto pb-4">
             <div className="flex gap-4 min-w-max">
@@ -67,11 +67,15 @@ export default function Home() {
                 <Link
                   key={idx}
                   href={`/${game.sport}`}
-                  className="bg-[#E0F2FE] hover:bg-[#BAE6FD] rounded-lg p-6 border border-[#7DD3FC] transition min-w-[240px]"
+                  className="relative rounded-lg p-6 transition min-w-[240px] hover:-translate-y-1"
+                  style={{
+                    background: 'radial-gradient(circle at center, #D8E9FF 0%, #AFCBFF 90%)',
+                    boxShadow: '0 2px 8px rgba(15, 23, 42, 0.08)'
+                  }}
                 >
                   <div className="text-sm font-medium text-[#1E3A8A] mb-2">{game.tag}</div>
                   <div className="text-lg font-bold text-[#111827] mb-1">{game.teams}</div>
-                  <div className="text-sm text-gray-600">{game.time}</div>
+                  <div className="text-sm text-gray-700">{game.time}</div>
                 </Link>
               ))}
             </div>
@@ -80,10 +84,10 @@ export default function Home() {
       </section>
 
       {/* How It Works Section */}
-      <section className="py-20">
+      <section className="py-20 border-t border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-[#111827] mb-4">
+            <h2 className="text-4xl font-bold text-[#1E3A8A] mb-4">
               Built for serious DFS players.
             </h2>
           </div>
@@ -113,11 +117,15 @@ export default function Home() {
             ].map((feature, idx) => (
               <div
                 key={idx}
-                className="bg-[#E0F2FE] rounded-xl p-8 border border-[#7DD3FC] hover:shadow-lg transition"
+                className="rounded-xl p-8 transition hover:shadow-xl hover:-translate-y-1"
+                style={{
+                  background: 'radial-gradient(circle at center, #D8E9FF 0%, #AFCBFF 90%)',
+                  boxShadow: '0 2px 8px rgba(15, 23, 42, 0.08)'
+                }}
               >
                 <feature.icon className="h-12 w-12 text-[#1E3A8A] mb-4" />
-                <h3 className="text-xl font-bold text-[#111827] mb-3">{feature.title}</h3>
-                <p className="text-gray-600 leading-relaxed">{feature.description}</p>
+                <h3 className="text-xl font-bold text-[#1E3A8A] mb-3">{feature.title}</h3>
+                <p className="text-[#111827] leading-relaxed">{feature.description}</p>
               </div>
             ))}
           </div>
@@ -125,16 +133,27 @@ export default function Home() {
       </section>
 
       {/* Free Trial Block */}
-      <section className="py-20 bg-white">
+      <section
+        className="py-24 border-t border-gray-100"
+        style={{
+          background: 'linear-gradient(to bottom, rgba(216, 233, 255, 0.3), rgba(249, 250, 251, 1))'
+        }}
+      >
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl font-bold text-[#111827] mb-4">
+          <h2 className="text-4xl font-bold text-[#1E3A8A] mb-4">
             Start your 3-day free trial.
           </h2>
           <p className="text-lg text-gray-600 mb-8">
             Credit card required. Cancel anytime before your trial ends.
           </p>
 
-          <div className="bg-[#E0F2FE] rounded-xl p-8 mb-8 text-left max-w-2xl mx-auto border border-[#7DD3FC]">
+          <div
+            className="rounded-xl p-8 mb-8 text-left max-w-2xl mx-auto"
+            style={{
+              background: 'radial-gradient(circle at center, #D8E9FF 0%, #AFCBFF 90%)',
+              boxShadow: '0 4px 12px rgba(15, 23, 42, 0.1)'
+            }}
+          >
             <ul className="space-y-3">
               {[
                 "Access to all core tools",
@@ -150,7 +169,7 @@ export default function Home() {
                   >
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  <span className="text-gray-700">{item}</span>
+                  <span className="text-[#111827] font-medium">{item}</span>
                 </li>
               ))}
             </ul>
@@ -166,9 +185,9 @@ export default function Home() {
       </section>
 
       {/* Articles Preview Section */}
-      <section className="py-20">
+      <section className="py-20 border-t border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-4xl font-bold text-[#111827] mb-12 text-center">
+          <h2 className="text-4xl font-bold text-[#1E3A8A] mb-12 text-center">
             Learn while you play.
           </h2>
 
@@ -189,14 +208,23 @@ export default function Home() {
             ].map((article, idx) => (
               <div
                 key={idx}
-                className="bg-white rounded-xl p-6 border border-gray-200 hover:shadow-lg transition"
+                className="bg-white rounded-xl p-6 transition hover:shadow-xl hover:-translate-y-1"
+                style={{
+                  border: '1px solid #E5E7EB',
+                  boxShadow: '0 2px 8px rgba(15, 23, 42, 0.08)'
+                }}
               >
                 <div className="mb-4">
-                  <span className="inline-block bg-[#E0F2FE] text-[#1E3A8A] text-xs font-semibold px-3 py-1 rounded-full">
+                  <span
+                    className="inline-block text-[#1E3A8A] text-xs font-semibold px-3 py-1 rounded-full"
+                    style={{
+                      background: 'radial-gradient(circle at center, #D8E9FF 0%, #AFCBFF 90%)'
+                    }}
+                  >
                     Coming Soon
                   </span>
                 </div>
-                <h3 className="text-xl font-bold text-[#111827] mb-2">{article.title}</h3>
+                <h3 className="text-xl font-bold text-[#1E3A8A] mb-2">{article.title}</h3>
                 <p className="text-gray-600">{article.description}</p>
               </div>
             ))}

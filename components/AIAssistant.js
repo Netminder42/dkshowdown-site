@@ -73,8 +73,14 @@ export default function AIAssistant() {
             {/* Body */}
             <div className="p-6 space-y-4">
               {/* Static Message */}
-              <div className="bg-[#E0F2FE] rounded-lg p-4 border border-[#7DD3FC]">
-                <p className="text-gray-700 text-sm leading-relaxed">
+              <div
+                className="rounded-lg p-4"
+                style={{
+                  background: 'radial-gradient(circle at center, #D8E9FF 0%, #AFCBFF 90%)',
+                  boxShadow: '0 2px 8px rgba(15, 23, 42, 0.08)'
+                }}
+              >
+                <p className="text-[#111827] text-sm leading-relaxed">
                   I'll help you choose slates, run sims, and build sharper lineups once the backend is connected.
                 </p>
               </div>
