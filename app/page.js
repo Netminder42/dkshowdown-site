@@ -2,6 +2,9 @@
 
 import Navigation from '@/Components/Navigation'
 import Link from 'next/link'
+import { motion } from 'framer-motion'
+import { useInView } from 'react-intersection-observer'
+import { SparklesIcon, ChartBarIcon, TrophyIcon, BoltIcon } from '@heroicons/react/24/outline'
 
 export default function Home() {
   return (
@@ -10,29 +13,102 @@ export default function Home() {
 
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-green-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+        {/* Animated background elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <motion.div
+            animate={{
+              scale: [1, 1.2, 1],
+              rotate: [0, 90, 0],
+            }}
+            transition={{
+              duration: 20,
+              repeat: Infinity,
+              repeatType: 'reverse',
+            }}
+            className="absolute -top-1/2 -left-1/4 w-96 h-96 bg-green-500/10 rounded-full blur-3xl"
+          />
+          <motion.div
+            animate={{
+              scale: [1, 1.3, 1],
+              rotate: [0, -90, 0],
+            }}
+            transition={{
+              duration: 25,
+              repeat: Infinity,
+              repeatType: 'reverse',
+            }}
+            className="absolute -bottom-1/2 -right-1/4 w-96 h-96 bg-green-600/10 rounded-full blur-3xl"
+          />
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 relative z-10">
           <div className="text-center">
-            <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
-              Master DraftKings DFS
-            </h1>
-            <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                className="inline-flex items-center px-4 py-2 bg-green-900/30 border border-green-700 rounded-full text-green-400 text-sm font-medium mb-6"
+              >
+                <SparklesIcon className="h-4 w-4 mr-2" />
+                AI-Powered DFS Picks
+              </motion.div>
+
+              <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">
+                Master{' '}
+                <span className="bg-gradient-to-r from-green-400 to-green-600 bg-clip-text text-transparent">
+                  DraftKings DFS
+                </span>
+              </h1>
+            </motion.div>
+
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="text-xl md:text-2xl text-gray-300 mb-10 max-w-3xl mx-auto"
+            >
               The only platform built specifically for Showdown and Classic DFS with AI-powered picks and tools
-            </p>
-            <div className="flex justify-center gap-4">
-              <Link
-                href="/auth/signup"
-                className="bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-8 rounded-lg text-lg transition"
-              >
-                Start Free 7-Day Trial
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="flex flex-col sm:flex-row justify-center gap-4"
+            >
+              <Link href="/auth/signup">
+                <motion.button
+                  whileHover={{ scale: 1.05, boxShadow: '0 20px 40px rgba(34, 197, 94, 0.3)' }}
+                  whileTap={{ scale: 0.95 }}
+                  className="bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 text-white font-bold py-4 px-8 rounded-xl text-lg transition-all shadow-lg shadow-green-900/50"
+                >
+                  Start Free 7-Day Trial
+                </motion.button>
               </Link>
-              <Link
-                href="/picks"
-                className="bg-gray-800 hover:bg-gray-700 text-white font-bold py-4 px-8 rounded-lg text-lg transition border border-gray-700"
-              >
-                View Picks
+              <Link href="/picks">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="bg-gray-800/50 backdrop-blur-sm hover:bg-gray-700/50 text-white font-bold py-4 px-8 rounded-xl text-lg transition-all border border-gray-700"
+                >
+                  View Picks
+                </motion.button>
               </Link>
-            </div>
-            <p className="text-gray-400 mt-4 text-sm">No credit card required</p>
+            </motion.div>
+
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6 }}
+              className="text-gray-400 mt-6 text-sm"
+            >
+              No credit card required • Cancel anytime
+            </motion.p>
           </div>
         </div>
       </div>
@@ -139,32 +215,88 @@ export default function Home() {
 }
 
 function FeatureCard({ icon, title, description }) {
+  const [ref, inView] = useInView({
+    triggerOnce: true,
+    threshold: 0.1,
+  })
+
   return (
-    <div className="bg-gray-800 rounded-lg p-6 border border-gray-700 hover:border-green-600 transition">
-      <div className="text-4xl mb-4">{icon}</div>
-      <h3 className="text-xl font-bold text-white mb-2">{title}</h3>
-      <p className="text-gray-400">{description}</p>
-    </div>
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 50 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.5 }}
+    >
+      <motion.div
+        whileHover={{ y: -10, boxShadow: '0 20px 40px rgba(0,0,0,0.3)' }}
+        className="bg-gray-800 rounded-xl p-8 border border-gray-700 hover:border-green-600 transition-colors h-full"
+      >
+        <motion.div
+          whileHover={{ scale: 1.1, rotate: 5 }}
+          className="text-5xl mb-6"
+        >
+          {icon}
+        </motion.div>
+        <h3 className="text-2xl font-bold text-white mb-3">{title}</h3>
+        <p className="text-gray-400 leading-relaxed">{description}</p>
+      </motion.div>
+    </motion.div>
   )
 }
 
 function SportCard({ sport, emoji }) {
+  const [ref, inView] = useInView({
+    triggerOnce: true,
+    threshold: 0.1,
+  })
+
   return (
-    <div className="bg-gray-900 rounded-lg p-6 text-center border border-gray-700 hover:border-green-600 transition">
-      <div className="text-5xl mb-3">{emoji}</div>
-      <h3 className="text-xl font-bold text-white">{sport}</h3>
-    </div>
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={inView ? { opacity: 1, scale: 1 } : {}}
+      transition={{ duration: 0.4 }}
+    >
+      <motion.div
+        whileHover={{ scale: 1.05, borderColor: 'rgb(34, 197, 94)' }}
+        whileTap={{ scale: 0.95 }}
+        className="bg-gray-900 rounded-xl p-8 text-center border border-gray-700 hover:border-green-600 transition-colors cursor-pointer"
+      >
+        <motion.div
+          whileHover={{ scale: 1.2, rotate: [0, -10, 10, 0] }}
+          transition={{ duration: 0.3 }}
+          className="text-6xl mb-4"
+        >
+          {emoji}
+        </motion.div>
+        <h3 className="text-2xl font-bold text-white">{sport}</h3>
+      </motion.div>
+    </motion.div>
   )
 }
 
 function PricingFeature({ text }) {
   return (
-    <li className="flex items-center text-green-100">
-      <svg className="w-5 h-5 mr-2 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <motion.li
+      initial={{ opacity: 0, x: -20 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true }}
+      className="flex items-center text-green-100"
+    >
+      <motion.svg
+        initial={{ scale: 0 }}
+        whileInView={{ scale: 1 }}
+        viewport={{ once: true }}
+        transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+        className="w-5 h-5 mr-3 text-green-400"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-      </svg>
+      </motion.svg>
       {text}
-    </li>
+    </motion.li>
   )
 }
 

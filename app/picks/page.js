@@ -5,6 +5,8 @@ import { useSession } from 'next-auth/react'
 import { useSearchParams } from 'next/navigation'
 import Navigation from '@/Components/Navigation'
 import Link from 'next/link'
+import { motion, AnimatePresence } from 'framer-motion'
+import { PickCardSkeleton } from '@/Components/LoadingSkeletons'
 
 export default function Picks() {
   const { data: session } = useSession()
@@ -39,53 +41,63 @@ export default function Picks() {
       <Navigation />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-4">DFS Picks</h1>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-8"
+        >
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent mb-6">
+            DFS Picks
+          </h1>
 
           {/* Filters */}
-          <div className="flex flex-wrap gap-4">
+          <div className="flex flex-wrap gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-400 mb-2">Sport</label>
+              <label className="block text-sm font-semibold text-gray-400 mb-3">Sport</label>
               <div className="flex gap-2">
                 {['NFL', 'NBA', 'MLB', 'NHL'].map(s => (
-                  <button
+                  <motion.button
                     key={s}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={() => setSport(s)}
-                    className={`px-4 py-2 rounded-md font-medium ${
+                    className={`px-5 py-2.5 rounded-xl font-medium transition-all ${
                       sport === s
-                        ? 'bg-green-600 text-white'
-                        : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                        ? 'bg-gradient-to-r from-green-600 to-green-500 text-white shadow-lg shadow-green-900/50'
+                        : 'bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-700'
                     }`}
                   >
                     {s}
-                  </button>
+                  </motion.button>
                 ))}
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-400 mb-2">Type</label>
+              <label className="block text-sm font-semibold text-gray-400 mb-3">Type</label>
               <div className="flex gap-2">
                 {[
                   { value: 'showdown', label: 'Showdown' },
                   { value: 'classic', label: 'Classic' }
                 ].map(t => (
-                  <button
+                  <motion.button
                     key={t.value}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={() => setGameType(t.value)}
-                    className={`px-4 py-2 rounded-md font-medium ${
+                    className={`px-5 py-2.5 rounded-xl font-medium transition-all ${
                       gameType === t.value
-                        ? 'bg-green-600 text-white'
-                        : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                        ? 'bg-gradient-to-r from-green-600 to-green-500 text-white shadow-lg shadow-green-900/50'
+                        : 'bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-700'
                     }`}
                   >
                     {t.label}
-                  </button>
+                  </motion.button>
                 ))}
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
 
         {/* Premium Banner */}
         {!hasPremiumAccess && (
@@ -106,21 +118,51 @@ export default function Picks() {
         )}
 
         {/* Picks List */}
-        {loading ? (
-          <div className="text-center py-12">
-            <div className="text-white">Loading picks...</div>
-          </div>
-        ) : picks.length === 0 ? (
-          <div className="bg-gray-800 rounded-lg p-12 text-center border border-gray-700">
-            <p className="text-gray-400 text-lg">No picks available for {sport} {gameType} yet.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {picks.map(pick => (
-              <PickCard key={pick.id} pick={pick} hasPremiumAccess={hasPremiumAccess} />
-            ))}
-          </div>
-        )}
+        <AnimatePresence mode="wait">
+          {loading ? (
+            <motion.div
+              key="loading"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            >
+              {[...Array(6)].map((_, i) => (
+                <PickCardSkeleton key={i} />
+              ))}
+            </motion.div>
+          ) : picks.length === 0 ? (
+            <motion.div
+              key="empty"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className="bg-gray-800 rounded-xl p-16 text-center border border-gray-700"
+            >
+              <p className="text-gray-400 text-xl">No picks available for {sport} {gameType} yet.</p>
+              <p className="text-gray-500 text-sm mt-2">Check back soon for new picks!</p>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="picks"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            >
+              {picks.map((pick, idx) => (
+                <motion.div
+                  key={pick.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.1 }}
+                >
+                  <PickCard pick={pick} hasPremiumAccess={hasPremiumAccess} />
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   )
@@ -136,7 +178,11 @@ function PickCard({ pick, hasPremiumAccess }) {
   }
 
   return (
-    <div className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden hover:border-green-600 transition">
+    <motion.div
+      whileHover={{ y: -8, boxShadow: '0 20px 40px rgba(0,0,0,0.4)' }}
+      transition={{ duration: 0.2 }}
+      className="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden hover:border-green-600 transition-colors h-full"
+    >
       {/* Header */}
       <div className="bg-gray-900 px-6 py-4 border-b border-gray-700">
         <div className="flex items-center justify-between mb-2">
@@ -221,7 +267,7 @@ function PickCard({ pick, hasPremiumAccess }) {
           })}
         </p>
       </div>
-    </div>
+    </motion.div>
   )
 }
 

@@ -19,7 +19,11 @@
     "@headlessui/react": "^1.7.18",
     "@heroicons/react": "^2.1.1",
     "react-hot-toast": "^2.4.1",
-    "swr": "^2.2.4"
+    "swr": "^2.2.4",
+    "framer-motion": "^11.0.3",
+    "recharts": "^2.10.3",
+    "react-intersection-observer": "^9.5.3",
+    "clsx": "^2.1.0"
   },
   "devDependencies": {
     "eslint": "8.56.0",
