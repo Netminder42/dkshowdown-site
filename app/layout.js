@@ -1,4 +1,5 @@
 import SessionProvider from '@/components/SessionProvider'
+import AIAssistant from '@/components/AIAssistant'
 import { Toaster } from 'react-hot-toast'
 import '@/styles/globals.css'
 
@@ -17,6 +18,7 @@ export default function RootLayout({ children }) {
         <SessionProvider>
           {children}
           <Toaster position="top-right" />
+          <AIAssistant />
         </SessionProvider>
       </body>
     </html>
