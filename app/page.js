@@ -251,27 +251,29 @@ function SportCard({ sport, emoji }) {
   })
 
   return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={inView ? { opacity: 1, scale: 1 } : {}}
-      transition={{ duration: 0.4 }}
-    >
+    <Link href={`/${sport.toLowerCase()}`}>
       <motion.div
-        whileHover={{ scale: 1.05, borderColor: 'rgb(34, 197, 94)' }}
-        whileTap={{ scale: 0.95 }}
-        className="bg-gray-900 rounded-xl p-8 text-center border border-gray-700 hover:border-green-600 transition-colors cursor-pointer"
+        ref={ref}
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={inView ? { opacity: 1, scale: 1 } : {}}
+        transition={{ duration: 0.4 }}
       >
         <motion.div
-          whileHover={{ scale: 1.2, rotate: [0, -10, 10, 0] }}
-          transition={{ duration: 0.3 }}
-          className="text-6xl mb-4"
+          whileHover={{ scale: 1.05, borderColor: 'rgb(34, 197, 94)' }}
+          whileTap={{ scale: 0.95 }}
+          className="bg-gray-900 rounded-xl p-8 text-center border border-gray-700 hover:border-green-600 transition-colors cursor-pointer"
         >
-          {emoji}
+          <motion.div
+            whileHover={{ scale: 1.2, rotate: [0, -10, 10, 0] }}
+            transition={{ duration: 0.3 }}
+            className="text-6xl mb-4"
+          >
+            {emoji}
+          </motion.div>
+          <h3 className="text-2xl font-bold text-white">{sport}</h3>
         </motion.div>
-        <h3 className="text-2xl font-bold text-white">{sport}</h3>
       </motion.div>
-    </motion.div>
+    </Link>
   )
 }
 
