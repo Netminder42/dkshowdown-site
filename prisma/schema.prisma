@@ -1,0 +1,105 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  password      String
+  role          String    @default("user") // "user" or "admin"
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  subscription  Subscription?
+  pickTracking  PickTracking[]
+}
+
+model Subscription {
+  id                String    @id @default(cuid())
+  userId            String    @unique
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  stripeCustomerId       String?   @unique
+  stripeSubscriptionId   String?   @unique
+  stripePriceId          String?
+  stripeCurrentPeriodEnd DateTime?
+
+  status            String    @default("trialing") // "trialing", "active", "canceled", "past_due"
+  trialEndsAt       DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+}
+
+model Pick {
+  id          String    @id @default(cuid())
+  sport       String    // "NFL", "NBA", "MLB", "NHL"
+  gameType    String    // "classic", "showdown"
+  date        DateTime
+  gameInfo    String    // e.g., "NYK @ BOS"
+
+  title       String
+  description String?
+
+  // Pick details
+  players     Json      // Array of player objects with name, position, salary, projection
+  totalSalary Int?
+  projection  Float?
+  confidence  String?   // "high", "medium", "low"
+
+  // Captain/MVP for showdown
+  captain     String?
+
+  // Results tracking
+  actualScore Float?
+  result      String?   // "win", "loss", "pending"
+
+  isPremium   Boolean   @default(true)
+  isPublished Boolean   @default(false)
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  tracking    PickTracking[]
+}
+
+model PickTracking {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pickId    String
+  pick      Pick     @relation(fields: [pickId], references: [id], onDelete: Cascade)
+
+  saved     Boolean  @default(false)
+  entered   Boolean  @default(false)
+  result    String?  // User's personal result
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, pickId])
+}
+
+model Analytics {
+  id          String   @id @default(cuid())
+  sport       String
+  gameType    String
+  totalPicks  Int      @default(0)
+  wins        Int      @default(0)
+  losses      Int      @default(0)
+  avgScore    Float?
+  roi         Float?
+
+  month       Int
+  year        Int
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([sport, gameType, month, year])
+}
