@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { useSession } from 'next-auth/react'
 import { useSearchParams } from 'next/navigation'
 import Navigation from '@/components/Navigation'
@@ -8,7 +8,7 @@ import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import { PickCardSkeleton } from '@/components/LoadingSkeletons'
 
-export default function Picks() {
+function PicksContent() {
   const { data: session } = useSession()
   const searchParams = useSearchParams()
   const [picks, setPicks] = useState([])
@@ -165,6 +165,25 @@ export default function Picks() {
         </AnimatePresence>
       </div>
     </div>
+  )
+}
+
+export default function Picks() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-900">
+        <Navigation />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[...Array(6)].map((_, i) => (
+              <PickCardSkeleton key={i} />
+            ))}
+          </div>
+        </div>
+      </div>
+    }>
+      <PicksContent />
+    </Suspense>
   )
 }
 
