@@ -8,9 +8,11 @@ import { SparklesIcon, ChartBarIcon, TrophyIcon, CogIcon } from '@heroicons/reac
 export default function Home() {
   return (
     <div className="min-h-screen bg-[#F9FAFB]">
-      {/* DEPLOYMENT TEST BANNER - v1.1 BUILD ACTIVE */}
-      <div className="bg-gradient-to-r from-green-500 to-blue-500 text-white text-center py-2 text-sm font-bold">
-        ✓ Homepage v1.1 Build Deployed - {new Date().toISOString().slice(0,16)}
+      {/* DEPLOYMENT TEST BANNER - NEW FANTASYHUBAI VERCEL PROJECT */}
+      <div className="bg-gradient-to-r from-purple-600 via-pink-600 to-red-600 text-white text-center py-6 font-bold shadow-2xl">
+        <div className="text-2xl mb-2">🚀 NEW VERCEL PROJECT ACTIVE 🚀</div>
+        <div className="text-lg">FantasyHubAI - Homepage v1.1 - Build: {new Date().toISOString()}</div>
+        <div className="text-sm mt-1">If you see this banner, the new deployment is working!</div>
       </div>
       <NavigationNew />
 
