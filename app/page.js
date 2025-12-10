@@ -17,7 +17,7 @@ export default function Home() {
       <NavigationNew />
 
       {/* Hero Section - NFL Action Background - v1.1 Build */}
-      <section className="relative overflow-hidden">
+      <section className="relative overflow-hidden min-h-[600px] flex items-center">
         {/* Background Image with Overlay */}
         <div
           className="absolute inset-0 bg-cover bg-center"
@@ -31,7 +31,7 @@ export default function Home() {
         </div>
 
         {/* Hero Content */}
-        <div className="relative z-10 py-24 lg:py-32">
+        <div className="relative z-10 w-full py-24 lg:py-32">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-3xl">
               <h1 className="text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
