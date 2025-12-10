@@ -10,7 +10,7 @@ export default function Home() {
     <div className="min-h-screen bg-[#F9FAFB]">
       <NavigationNew />
 
-      {/* Hero Section - NFL Action Background */}
+      {/* Hero Section - NFL Action Background - v1.1 Build */}
       <section className="relative overflow-hidden">
         {/* Background Image with Overlay */}
         <div
@@ -19,6 +19,10 @@ export default function Home() {
             backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.15), rgba(0,0,0,0.35)), url('https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=2000&auto=format&fit=crop')`,
           }}
         />
+        {/* Build Version Marker */}
+        <div className="absolute top-2 right-2 text-white/40 text-xs font-mono z-20">
+          v1.1-{new Date().toISOString().slice(0,10)}
+        </div>
 
         {/* Hero Content */}
         <div className="relative z-10 py-24 lg:py-32">
