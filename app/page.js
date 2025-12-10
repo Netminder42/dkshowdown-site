@@ -8,12 +8,6 @@ import { SparklesIcon, ChartBarIcon, TrophyIcon, CogIcon } from '@heroicons/reac
 export default function Home() {
   return (
     <div className="min-h-screen bg-[#F9FAFB]">
-      {/* DEPLOYMENT TEST BANNER - NEW FANTASYHUBAI VERCEL PROJECT */}
-      <div className="bg-gradient-to-r from-purple-600 via-pink-600 to-red-600 text-white text-center py-6 font-bold shadow-2xl">
-        <div className="text-2xl mb-2">🚀 NEW VERCEL PROJECT ACTIVE 🚀</div>
-        <div className="text-lg">FantasyHubAI - Homepage v1.1 - Build: {new Date().toISOString()}</div>
-        <div className="text-sm mt-1">If you see this banner, the new deployment is working!</div>
-      </div>
       <NavigationNew />
 
       {/* Hero Section - NFL Action Background */}
@@ -21,10 +15,7 @@ export default function Home() {
         className="relative overflow-hidden w-full"
         style={{
           minHeight: '600px',
-          backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.15), rgba(0,0,0,0.35)), url('https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=2000&auto=format&fit=crop')`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat'
+          background: `linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url('https://images.pexels.com/photos/1618200/pexels-photo-1618200.jpeg?auto=compress&cs=tinysrgb&w=1920') center/cover no-repeat`,
         }}
       >
         {/* Hero Content */}
