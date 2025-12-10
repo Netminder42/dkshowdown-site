@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import NavigationNew from '@/components/NavigationNew'
 import Footer from '@/components/Footer'
 import Link from 'next/link'
-import { SparklesIcon, ChartBarIcon, TrophyIcon, CogIcon, BeakerIcon, BoltIcon, ChartPieIcon, RocketLaunchIcon, PlayIcon, ChevronLeftIcon, ChevronRightIcon, FireIcon, ClockIcon, NewspaperIcon, VideoCameraIcon, LightBulbIcon, AcademicCapIcon, CpuChipIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline'
+import { SparklesIcon, ChartBarIcon, TrophyIcon, CogIcon, BeakerIcon, BoltIcon, ChartPieIcon, RocketLaunchIcon, PlayIcon, ChevronLeftIcon, ChevronRightIcon, FireIcon, ClockIcon, NewspaperIcon, VideoCameraIcon, LightBulbIcon, AcademicCapIcon, CpuChipIcon, MagnifyingGlassIcon, ArrowTrendingUpIcon, ArrowTrendingDownIcon, CloudIcon, ExclamationTriangleIcon, UserGroupIcon } from '@heroicons/react/24/outline'
 import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
 import useEmblaCarousel from 'embla-carousel-react'
@@ -59,24 +59,24 @@ const featuredArticles = [
   },
 ]
 
-// DFS Tools data
+// DFS Tools data - Updated colors per v2.3
 const dfsTools = [
   {
     title: "Sim Engine",
     description: "Run thousands of slate simulations to identify edge.",
-    color: "#3B82F6",
+    color: "#2563EB",
     icon: BeakerIcon
   },
   {
     title: "Boom/Bust",
     description: "See upside vs. floor for every player on the slate.",
-    color: "#22C55E",
+    color: "#16A34A",
     icon: BoltIcon
   },
   {
     title: "Projections",
     description: "Access our expert-built projections instantly.",
-    color: "#8B5CF6",
+    color: "#7C3AED",
     icon: ChartPieIcon
   },
   {
@@ -337,6 +337,150 @@ const dfsContentFeed = [
   },
 ]
 
+// DFS Ticker Bar data - V2.3
+const tickerNews = [
+  { text: "LeBron upgraded to probable", sport: "NBA", color: "#EF4444" },
+  { text: "Mahomes ownership rising to 35%", sport: "NFL", color: "#3B82F6" },
+  { text: "Ohtani wind boost +12% HR odds", sport: "MLB", color: "#16A34A" },
+  { text: "Tatum listed OUT - Pivot to Brown", sport: "NBA", color: "#EF4444" },
+  { text: "KC-BUF game total up to 52.5", sport: "NFL", color: "#3B82F6" },
+  { text: "Kershaw scratched - Dodgers TBD", sport: "MLB", color: "#16A34A" },
+  { text: "Jokić triple-double odds 65%", sport: "NBA", color: "#EF4444" },
+  { text: "CMC full practice - GTD status", sport: "NFL", color: "#3B82F6" },
+  { text: "Coors Field slate - 12+ run total", sport: "MLB", color: "#16A34A" },
+  { text: "Embiid usage up with Maxey out", sport: "NBA", color: "#EF4444" },
+  { text: "Weather alert: Winds 18mph in DEN", sport: "NFL", color: "#3B82F6" },
+  { text: "Judge facing LHP - Elite matchup", sport: "MLB", color: "#16A34A" },
+  { text: "Giannis pace-up game vs LAL", sport: "NBA", color: "#EF4444" },
+  { text: "Kelce target share trending down", sport: "NFL", color: "#3B82F6" },
+  { text: "Acuña stolen base odds 45%", sport: "MLB", color: "#16A34A" },
+]
+
+// Top Values data - V2.3
+const topValues = [
+  { name: "Tyrese Maxey", team: "PHI", position: "PG", salary: 7200, projection: 42.8, value: 5.9, image: "https://picsum.photos/seed/maxey/100/100" },
+  { name: "Jahmyr Gibbs", team: "DET", position: "RB", salary: 5800, projection: 18.4, value: 3.2, image: "https://picsum.photos/seed/gibbs/100/100" },
+  { name: "Freddie Freeman", team: "LAD", position: "1B", salary: 4900, projection: 11.8, value: 2.4, image: "https://picsum.photos/seed/freeman/100/100" },
+]
+
+// Core Plays data - V2.3
+const corePlays = [
+  { name: "Nikola Jokić", team: "DEN", position: "C", salary: 11500, projection: 58.2, ownership: 42, image: "https://picsum.photos/seed/jokic/100/100" },
+  { name: "Christian McCaffrey", team: "SF", position: "RB", salary: 9200, projection: 22.4, ownership: 38, image: "https://picsum.photos/seed/cmc/100/100" },
+  { name: "Ronald Acuña Jr.", team: "ATL", position: "OF", salary: 6200, projection: 13.2, ownership: 35, image: "https://picsum.photos/seed/acuna/100/100" },
+]
+
+// Leverage Targets data - V2.3
+const leverageTargets = [
+  { name: "Desmond Bane", team: "MEM", position: "SG", salary: 6400, projection: 34.2, ownership: 12, image: "https://picsum.photos/seed/bane/100/100" },
+  { name: "Rachaad White", team: "TB", position: "RB", salary: 5200, projection: 14.8, ownership: 8, image: "https://picsum.photos/seed/white/100/100" },
+  { name: "Bobby Witt Jr.", team: "KC", position: "SS", salary: 5400, projection: 10.4, ownership: 9, image: "https://picsum.photos/seed/witt/100/100" },
+]
+
+// Ownership Movers data - V2.3
+const ownershipMovers = {
+  trendingUp: [
+    { name: "Luka Dončić", change: "+18%", current: 45, sport: "NBA" },
+    { name: "Travis Kelce", change: "+12%", current: 32, sport: "NFL" },
+    { name: "Shohei Ohtani", change: "+15%", current: 28, sport: "MLB" },
+  ],
+  trendingDown: [
+    { name: "Joel Embiid", change: "-22%", current: 18, sport: "NBA" },
+    { name: "Stefon Diggs", change: "-14%", current: 21, sport: "NFL" },
+    { name: "Mookie Betts", change: "-10%", current: 25, sport: "MLB" },
+  ],
+  chalk: [
+    { name: "Giannis", ownership: 52, sport: "NBA" },
+    { name: "Mahomes", ownership: 48, sport: "NFL" },
+  ],
+  fades: [
+    { name: "Jimmy Butler", reason: "Usage trending down", sport: "NBA" },
+    { name: "D. Adams", reason: "Tough CB matchup", sport: "NFL" },
+  ],
+}
+
+// Slate Overview stats - V2.3
+const slateOverview = {
+  games: 11,
+  highestTotal: 232.5,
+  paceUpGames: 4,
+  weatherAlerts: 2,
+  keyInjuries: 7,
+  simEdge: "93.2%",
+}
+
+// Sim Results Preview data - V2.3
+const simResults = {
+  winningLineup: [
+    { position: "PG", name: "Luka Dončić", salary: 11200, projection: 54.8 },
+    { position: "SG", name: "Devin Booker", salary: 8400, projection: 38.2 },
+    { position: "SF", name: "Jayson Tatum", salary: 9600, projection: 45.6 },
+    { position: "PF", name: "Giannis", salary: 11800, projection: 58.4 },
+    { position: "C", name: "Bam Adebayo", salary: 7800, projection: 36.2 },
+  ],
+  totalSalary: 48800,
+  projectedScore: 233.2,
+  simWinRate: "18.4%",
+}
+
+// Extended DFS Content Feed - V2.3 (adding 6 more items)
+const extendedContentFeed = [
+  {
+    sport: "NBA",
+    sportColor: "#EF4444",
+    title: "Pace-Up Games Drive GPP Upside Tonight",
+    teaser: "Three games with 240+ total - target high-usage guards in uptempo matchups.",
+    author: "Jake Turner",
+    time: "5h ago",
+    image: "https://picsum.photos/seed/pace-nba/120/120"
+  },
+  {
+    sport: "NFL",
+    sportColor: "#3B82F6",
+    title: "RB Handcuff Strategy for Week 12",
+    teaser: "Injury report creates leverage opportunities with Mitchell, Mostert backup roles.",
+    author: "Tom Reynolds",
+    time: "6h ago",
+    image: "https://picsum.photos/seed/rb-handcuff/120/120"
+  },
+  {
+    sport: "MLB",
+    sportColor: "#16A34A",
+    title: "Ballpark Factor Analysis: Tonight's Hitter-Friendly Venues",
+    teaser: "Coors, Great American, Camden - three elite parks for stacking bats.",
+    author: "Maria Vasquez",
+    time: "7h ago",
+    image: "https://picsum.photos/seed/ballpark/120/120"
+  },
+  {
+    sport: "NBA",
+    sportColor: "#EF4444",
+    title: "Defensive Rating Exploits: Targeting Weak Frontcourts",
+    teaser: "Portland's interior defense ranks 28th - pivot to paint scorers.",
+    author: "Jake Turner",
+    time: "8h ago",
+    image: "https://picsum.photos/seed/defense-nba/120/120"
+  },
+  {
+    sport: "NFL",
+    sportColor: "#3B82F6",
+    title: "WR/CB Shadow Coverage Report Week 12",
+    teaser: "Ramsey shadows Adams - downgrade target share expectations significantly.",
+    author: "Tom Reynolds",
+    time: "9h ago",
+    image: "https://picsum.photos/seed/coverage/120/120"
+  },
+  {
+    sport: "MLB",
+    sportColor: "#16A34A",
+    title: "Bullpen Fatigue Index Creates Late-Inning Run Potential",
+    teaser: "Yankees bullpen overworked - target opposing bats in innings 7-9.",
+    author: "Maria Vasquez",
+    time: "10h ago",
+    image: "https://picsum.photos/seed/bullpen/120/120"
+  },
+]
+
 // Animated Counter Component
 function AnimatedCounter({ value, duration = 2000 }) {
   const ref = useRef(null)
@@ -434,42 +578,144 @@ export default function Home() {
           </div>
         ))}
 
-        <div className="relative z-10 w-full py-28 lg:py-36">
+        <div className="relative z-10 w-full py-24 lg:py-32">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="max-w-3xl">
-              <h1 className="text-6xl lg:text-8xl font-extrabold text-white leading-tight mb-7">
-                Pro-grade DFS tools. <br />
-                No PhD required.
-              </h1>
-              <p className="text-xl lg:text-2xl text-white mb-9 leading-relaxed">
-                Build sharper DraftKings and FanDuel lineups with LineupIQ — your AI engine for slate sims, optimizers, and DFS strategy.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <motion.div
-                  animate={{
-                    boxShadow: [
-                      '0 0 35px rgba(0, 200, 83, 0.50)',
-                      '0 0 45px rgba(0, 200, 83, 0.65)',
-                      '0 0 35px rgba(0, 200, 83, 0.50)',
-                    ]
-                  }}
-                  transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-                  className="inline-block"
-                >
-                  <Link
-                    href="/auth/signup"
-                    className="inline-block bg-[#00C853] hover:bg-[#00B248] text-white font-bold px-9 py-5 rounded-lg text-center transition shadow-lg text-lg"
+            {/* 33/67 Split - V2.3 */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+
+              {/* LEFT THIRD - Headline & CTAs */}
+              <div className="lg:col-span-1">
+                <h1 className="text-3xl lg:text-4xl font-extrabold text-white leading-tight mb-5">
+                  Pro-grade DFS tools. <br />
+                  No PhD required.
+                </h1>
+                <p className="text-base lg:text-lg text-white/90 mb-6 leading-relaxed">
+                  Build sharper DraftKings and FanDuel lineups with LineupIQ.
+                </p>
+                <div className="flex flex-col gap-3">
+                  <motion.div
+                    animate={{
+                      boxShadow: [
+                        '0 0 35px rgba(0, 200, 83, 0.50)',
+                        '0 0 45px rgba(0, 200, 83, 0.65)',
+                        '0 0 35px rgba(0, 200, 83, 0.50)',
+                      ]
+                    }}
+                    transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+                    className="inline-block"
                   >
-                    Start 3-Day Free Trial
+                    <Link
+                      href="/auth/signup"
+                      className="block bg-[#00C853] hover:bg-[#00B248] text-white font-bold px-8 py-4 rounded-lg text-center transition shadow-lg"
+                    >
+                      Start Free Trial
+                    </Link>
+                  </motion.div>
+                  <Link
+                    href="#featured-articles"
+                    className="block bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white font-semibold px-8 py-4 rounded-lg text-center transition border-2 border-white/50"
+                  >
+                    View Articles
                   </Link>
-                </motion.div>
-                <Link
-                  href="#featured-articles"
-                  className="inline-block bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white font-semibold px-9 py-5 rounded-lg text-center transition border-2 border-white/50 text-lg"
-                >
-                  View Featured Articles
-                </Link>
+                </div>
               </div>
+
+              {/* RIGHT TWO-THIRDS - AI Showcase */}
+              <div className="lg:col-span-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                  {/* AI Assistant Panel Preview */}
+                  <motion.div
+                    className="rounded-xl p-6"
+                    style={{
+                      background: 'rgba(255, 255, 255, 0.12)',
+                      backdropFilter: 'blur(12px)',
+                      boxShadow: `
+                        0 8px 24px rgba(0,0,0,0.35),
+                        0 0 35px rgba(59,130,246,0.45),
+                        inset 0 0 20px rgba(16,185,129,0.25)
+                      `,
+                      border: '1px solid rgba(255,255,255,0.18)',
+                    }}
+                    animate={{
+                      scale: [1, 1.02, 1],
+                      boxShadow: [
+                        `0 8px 24px rgba(0,0,0,0.35), 0 0 35px rgba(59,130,246,0.45), inset 0 0 20px rgba(16,185,129,0.25)`,
+                        `0 10px 28px rgba(0,0,0,0.40), 0 0 42px rgba(59,130,246,0.55), inset 0 0 25px rgba(16,185,129,0.35)`,
+                        `0 8px 24px rgba(0,0,0,0.35), 0 0 35px rgba(59,130,246,0.45), inset 0 0 20px rgba(16,185,129,0.25)`,
+                      ]
+                    }}
+                    transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+                  >
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-green-500 flex items-center justify-center">
+                        <SparklesIcon className="h-6 w-6 text-white" />
+                      </div>
+                      <div>
+                        <p className="text-white font-bold text-sm">LineupIQ Assistant</p>
+                        <p className="text-white/70 text-xs">AI-Powered Analysis</p>
+                      </div>
+                    </div>
+                    <div className="bg-white/10 rounded-lg p-4 mb-4">
+                      <p className="text-white text-sm font-semibold mb-2">
+                        💡 Recommended Core Play:
+                      </p>
+                      <p className="text-white/90 text-sm leading-relaxed">
+                        <span className="font-bold text-green-400">Jalen Brunson</span> projects as elite value at <span className="text-green-400 font-bold">6.1x</span> with Barrett out. Usage spike to 32% creates GPP leverage.
+                      </p>
+                    </div>
+                    <div className="flex gap-2">
+                      <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-500/20 border border-blue-400/30">
+                        <BeakerIcon className="h-4 w-4 text-blue-300" />
+                        <span className="text-xs text-blue-200 font-medium">Sim Engine</span>
+                      </div>
+                      <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-purple-500/20 border border-purple-400/30">
+                        <ChartPieIcon className="h-4 w-4 text-purple-300" />
+                        <span className="text-xs text-purple-200 font-medium">Projections</span>
+                      </div>
+                    </div>
+                  </motion.div>
+
+                  {/* Assistant Teaser Card */}
+                  <motion.div
+                    className="rounded-xl p-6"
+                    style={{
+                      background: 'rgba(255, 255, 255, 0.10)',
+                      backdropFilter: 'blur(10px)',
+                      boxShadow: `
+                        0 8px 24px rgba(0,0,0,0.30),
+                        0 0 30px rgba(16,185,129,0.40)
+                      `,
+                      border: '1px solid rgba(255,255,255,0.15)',
+                    }}
+                    whileHover={{
+                      y: -5,
+                      boxShadow: `
+                        0 12px 32px rgba(0,0,0,0.40),
+                        0 0 40px rgba(16,185,129,0.55)
+                      `
+                    }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center mb-4 shadow-lg">
+                      <SparklesIcon className="h-8 w-8 text-white" />
+                    </div>
+                    <h3 className="text-white font-extrabold text-xl mb-2">Your DFS Co-Pilot</h3>
+                    <p className="text-white/80 text-sm leading-relaxed mb-4">
+                      AI-powered picks, strategy, and slate guidance. LineupIQ analyzes thousands of simulations to find your edge.
+                    </p>
+                    <Link
+                      href="/tools"
+                      className="inline-flex items-center text-green-300 hover:text-green-200 font-semibold text-sm transition"
+                    >
+                      Explore Tools
+                      <ChevronRightIcon className="h-4 w-4 ml-1" />
+                    </Link>
+                  </motion.div>
+
+                </div>
+              </div>
+
             </div>
           </div>
         </div>
@@ -487,6 +733,43 @@ export default function Home() {
               aria-label={`Go to slide ${index + 1}`}
             />
           ))}
+        </div>
+      </section>
+
+      {/* DFS TICKER BAR - V2.3 */}
+      <section className="w-full overflow-hidden" style={{
+        background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 100%)',
+        borderTop: '2px solid rgba(59, 130, 246, 0.3)',
+        borderBottom: '2px solid rgba(59, 130, 246, 0.3)',
+      }}>
+        <div className="relative py-3">
+          <motion.div
+            className="flex gap-8 whitespace-nowrap"
+            animate={{
+              x: [0, -2000],
+            }}
+            transition={{
+              x: {
+                repeat: Infinity,
+                repeatType: "loop",
+                duration: 60,
+                ease: "linear",
+              },
+            }}
+          >
+            {[...tickerNews, ...tickerNews, ...tickerNews].map((news, idx) => (
+              <div key={idx} className="flex items-center gap-3 px-4">
+                <span
+                  className="px-2 py-1 rounded text-xs font-bold text-white"
+                  style={{ background: news.color }}
+                >
+                  {news.sport}
+                </span>
+                <span className="text-white/90 text-sm font-medium">{news.text}</span>
+                <span className="text-blue-400 text-lg">•</span>
+              </div>
+            ))}
+          </motion.div>
         </div>
       </section>
 
@@ -568,6 +851,128 @@ export default function Home() {
               </div>
             </section>
 
+            {/* NEW SECTION - TOP VALUES / CORE PLAYS / LEVERAGE - V2.3 */}
+            <section>
+              <h2 className="text-4xl lg:text-5xl font-extrabold text-[#1E3A8A] mb-12 text-center">
+                Today's Edge Opportunities
+              </h2>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                {/* Top Values */}
+                <div className="rounded-xl p-6" style={{
+                  background: 'white',
+                  boxShadow: `
+                    0 8px 22px rgba(0,0,0,0.18),
+                    0 0 32px rgba(37,99,235,0.55)
+                  `,
+                }}>
+                  <div className="flex items-center gap-2 mb-6">
+                    <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center">
+                      <ChartBarIcon className="h-6 w-6 text-white" />
+                    </div>
+                    <h3 className="text-xl font-extrabold text-[#1E3A8A]">Top Values</h3>
+                  </div>
+                  <div className="space-y-4">
+                    {topValues.map((player, idx) => (
+                      <motion.div
+                        key={idx}
+                        className="flex items-center gap-3 p-3 rounded-lg hover:bg-blue-50 transition"
+                        whileHover={{ x: 4 }}
+                      >
+                        <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
+                          <img src={player.image} alt={player.name} className="w-full h-full object-cover" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-extrabold text-[#1E3A8A] truncate">{player.name}</p>
+                          <p className="text-xs text-gray-600 font-medium">{player.team} · {player.position}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-lg font-extrabold text-blue-600">{player.value}x</p>
+                          <p className="text-xs text-gray-500">${player.salary}</p>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Core Plays */}
+                <div className="rounded-xl p-6" style={{
+                  background: 'white',
+                  boxShadow: `
+                    0 8px 22px rgba(0,0,0,0.18),
+                    0 0 32px rgba(249,115,22,0.55)
+                  `,
+                }}>
+                  <div className="flex items-center gap-2 mb-6">
+                    <div className="w-10 h-10 rounded-full bg-orange-600 flex items-center justify-center">
+                      <TrophyIcon className="h-6 w-6 text-white" />
+                    </div>
+                    <h3 className="text-xl font-extrabold text-[#1E3A8A]">Core Plays</h3>
+                  </div>
+                  <div className="space-y-4">
+                    {corePlays.map((player, idx) => (
+                      <motion.div
+                        key={idx}
+                        className="flex items-center gap-3 p-3 rounded-lg hover:bg-orange-50 transition"
+                        whileHover={{ x: 4 }}
+                      >
+                        <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
+                          <img src={player.image} alt={player.name} className="w-full h-full object-cover" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-extrabold text-[#1E3A8A] truncate">{player.name}</p>
+                          <p className="text-xs text-gray-600 font-medium">{player.team} · {player.position}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-lg font-extrabold text-orange-600">{player.ownership}%</p>
+                          <p className="text-xs text-gray-500">Own</p>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Leverage Targets */}
+                <div className="rounded-xl p-6" style={{
+                  background: 'white',
+                  boxShadow: `
+                    0 8px 22px rgba(0,0,0,0.18),
+                    0 0 32px rgba(239,68,68,0.55)
+                  `,
+                }}>
+                  <div className="flex items-center gap-2 mb-6">
+                    <div className="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center">
+                      <BoltIcon className="h-6 w-6 text-white" />
+                    </div>
+                    <h3 className="text-xl font-extrabold text-[#1E3A8A]">Leverage</h3>
+                  </div>
+                  <div className="space-y-4">
+                    {leverageTargets.map((player, idx) => (
+                      <motion.div
+                        key={idx}
+                        className="flex items-center gap-3 p-3 rounded-lg hover:bg-red-50 transition"
+                        whileHover={{ x: 4 }}
+                      >
+                        <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
+                          <img src={player.image} alt={player.name} className="w-full h-full object-cover" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-extrabold text-[#1E3A8A] truncate">{player.name}</p>
+                          <p className="text-xs text-gray-600 font-medium">{player.team} · {player.position}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-lg font-extrabold text-red-600">{player.ownership}%</p>
+                          <p className="text-xs text-gray-500">Low Own</p>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+
+              </div>
+            </section>
+
             {/* SECTION B - DFS TOOLS - Enhanced */}
             <section>
               <h2 className="text-4xl lg:text-5xl font-extrabold text-[#1E3A8A] mb-12 text-center">
@@ -609,6 +1014,218 @@ export default function Home() {
                     </div>
                   </motion.div>
                 ))}
+              </div>
+            </section>
+
+            {/* NEW SECTION - SLATE OVERVIEW BAR - V2.3 */}
+            <section className="rounded-xl p-6" style={{
+              background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 100%)',
+              boxShadow: `
+                0 8px 22px rgba(0,0,0,0.25),
+                0 0 35px rgba(59,130,246,0.45)
+              `,
+              border: '2px solid rgba(59,130,246,0.3)',
+            }}>
+              <h3 className="text-2xl font-extrabold text-white mb-6 text-center">Today's Slate Overview</h3>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                <div className="text-center">
+                  <p className="text-3xl font-extrabold text-blue-400 mb-1">{slateOverview.games}</p>
+                  <p className="text-xs text-white/70 font-medium">Games</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-3xl font-extrabold text-green-400 mb-1">{slateOverview.highestTotal}</p>
+                  <p className="text-xs text-white/70 font-medium">Highest Total</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-3xl font-extrabold text-purple-400 mb-1">{slateOverview.paceUpGames}</p>
+                  <p className="text-xs text-white/70 font-medium">Pace-Up</p>
+                </div>
+                <div className="text-center">
+                  <div className="flex items-center justify-center gap-1 mb-1">
+                    <CloudIcon className="h-6 w-6 text-orange-400" />
+                    <p className="text-3xl font-extrabold text-orange-400">{slateOverview.weatherAlerts}</p>
+                  </div>
+                  <p className="text-xs text-white/70 font-medium">Weather</p>
+                </div>
+                <div className="text-center">
+                  <div className="flex items-center justify-center gap-1 mb-1">
+                    <ExclamationTriangleIcon className="h-6 w-6 text-red-400" />
+                    <p className="text-3xl font-extrabold text-red-400">{slateOverview.keyInjuries}</p>
+                  </div>
+                  <p className="text-xs text-white/70 font-medium">Injuries</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-3xl font-extrabold text-emerald-400 mb-1">{slateOverview.simEdge}</p>
+                  <p className="text-xs text-white/70 font-medium">Sim Edge</p>
+                </div>
+              </div>
+            </section>
+
+            {/* NEW SECTION - OWNERSHIP MOVERS - V2.3 */}
+            <section>
+              <h2 className="text-4xl lg:text-5xl font-extrabold text-[#1E3A8A] mb-12 text-center">
+                Ownership Movers
+              </h2>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                {/* Trending Up */}
+                <div className="rounded-xl p-6" style={{
+                  background: 'white',
+                  boxShadow: `
+                    0 8px 22px rgba(0,0,0,0.18),
+                    0 0 32px rgba(34,197,94,0.55)
+                  `,
+                }}>
+                  <div className="flex items-center gap-2 mb-6">
+                    <ArrowTrendingUpIcon className="h-8 w-8 text-green-600" />
+                    <h3 className="text-xl font-extrabold text-[#1E3A8A]">Trending Up</h3>
+                  </div>
+                  <div className="space-y-3">
+                    {ownershipMovers.trendingUp.map((player, idx) => (
+                      <div key={idx} className="flex items-center justify-between p-3 rounded-lg bg-green-50">
+                        <div>
+                          <p className="text-sm font-extrabold text-[#1E3A8A]">{player.name}</p>
+                          <p className="text-xs text-gray-600">{player.sport}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-lg font-extrabold text-green-600">{player.change}</p>
+                          <p className="text-xs text-gray-500">{player.current}% own</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Trending Down */}
+                <div className="rounded-xl p-6" style={{
+                  background: 'white',
+                  boxShadow: `
+                    0 8px 22px rgba(0,0,0,0.18),
+                    0 0 32px rgba(239,68,68,0.55)
+                  `,
+                }}>
+                  <div className="flex items-center gap-2 mb-6">
+                    <ArrowTrendingDownIcon className="h-8 w-8 text-red-600" />
+                    <h3 className="text-xl font-extrabold text-[#1E3A8A]">Trending Down</h3>
+                  </div>
+                  <div className="space-y-3">
+                    {ownershipMovers.trendingDown.map((player, idx) => (
+                      <div key={idx} className="flex items-center justify-between p-3 rounded-lg bg-red-50">
+                        <div>
+                          <p className="text-sm font-extrabold text-[#1E3A8A]">{player.name}</p>
+                          <p className="text-xs text-gray-600">{player.sport}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-lg font-extrabold text-red-600">{player.change}</p>
+                          <p className="text-xs text-gray-500">{player.current}% own</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Chalk Summary */}
+                <div className="rounded-xl p-6" style={{
+                  background: 'white',
+                  boxShadow: `
+                    0 8px 22px rgba(0,0,0,0.18),
+                    0 0 32px rgba(249,115,22,0.55)
+                  `,
+                }}>
+                  <div className="flex items-center gap-2 mb-6">
+                    <UserGroupIcon className="h-8 w-8 text-orange-600" />
+                    <h3 className="text-xl font-extrabold text-[#1E3A8A]">Chalk Summary</h3>
+                  </div>
+                  <div className="space-y-3">
+                    {ownershipMovers.chalk.map((player, idx) => (
+                      <div key={idx} className="flex items-center justify-between p-3 rounded-lg bg-orange-50">
+                        <div>
+                          <p className="text-sm font-extrabold text-[#1E3A8A]">{player.name}</p>
+                          <p className="text-xs text-gray-600">{player.sport}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-lg font-extrabold text-orange-600">{player.ownership}%</p>
+                          <p className="text-xs text-gray-500">Chalk</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Fade Candidates */}
+                <div className="rounded-xl p-6" style={{
+                  background: 'white',
+                  boxShadow: `
+                    0 8px 22px rgba(0,0,0,0.18),
+                    0 0 32px rgba(124,58,237,0.55)
+                  `,
+                }}>
+                  <div className="flex items-center gap-2 mb-6">
+                    <ExclamationTriangleIcon className="h-8 w-8 text-purple-600" />
+                    <h3 className="text-xl font-extrabold text-[#1E3A8A]">Fade Candidates</h3>
+                  </div>
+                  <div className="space-y-3">
+                    {ownershipMovers.fades.map((player, idx) => (
+                      <div key={idx} className="p-3 rounded-lg bg-purple-50">
+                        <p className="text-sm font-extrabold text-[#1E3A8A] mb-1">{player.name}</p>
+                        <p className="text-xs text-purple-700 font-medium">{player.reason}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+              </div>
+            </section>
+
+            {/* NEW SECTION - SIM RESULTS PREVIEW - V2.3 */}
+            <section className="rounded-xl p-8" style={{
+              background: 'linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%)',
+              boxShadow: `
+                0 10px 28px rgba(0,0,0,0.25),
+                0 0 40px rgba(124,58,237,0.60)
+              `,
+            }}>
+              <h2 className="text-3xl font-extrabold text-white mb-6 text-center">AI Sim Results Preview</h2>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {/* Winning Lineup */}
+                <div>
+                  <h3 className="text-lg font-bold text-white/90 mb-4">Top Simulated Lineup</h3>
+                  <div className="space-y-2">
+                    {simResults.winningLineup.map((player, idx) => (
+                      <div key={idx} className="flex items-center justify-between p-3 rounded-lg bg-white/10 backdrop-blur-sm">
+                        <div className="flex items-center gap-3">
+                          <span className="w-10 text-center text-sm font-bold text-purple-300">{player.position}</span>
+                          <span className="text-sm font-extrabold text-white">{player.name}</span>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm font-bold text-white">{player.projection}</p>
+                          <p className="text-xs text-white/60">${player.salary}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Stats Summary */}
+                <div className="flex flex-col justify-center">
+                  <div className="grid grid-cols-2 gap-4 mb-6">
+                    <div className="text-center p-4 rounded-lg bg-white/10 backdrop-blur-sm">
+                      <p className="text-3xl font-extrabold text-emerald-400 mb-1">{simResults.projectedScore}</p>
+                      <p className="text-xs text-white/70">Projected Score</p>
+                    </div>
+                    <div className="text-center p-4 rounded-lg bg-white/10 backdrop-blur-sm">
+                      <p className="text-3xl font-extrabold text-blue-400 mb-1">${simResults.totalSalary}</p>
+                      <p className="text-xs text-white/70">Total Salary</p>
+                    </div>
+                  </div>
+                  <div className="text-center p-6 rounded-lg bg-white/15 backdrop-blur-sm">
+                    <p className="text-5xl font-extrabold text-yellow-400 mb-2">{simResults.simWinRate}</p>
+                    <p className="text-sm text-white/80 font-semibold">Sim Win Rate</p>
+                    <p className="text-xs text-white/60 mt-2">Based on 10,000 simulations</p>
+                  </div>
+                </div>
               </div>
             </section>
 
@@ -687,7 +1304,7 @@ export default function Home() {
               </h2>
 
               <div className="space-y-4">
-                {dfsContentFeed.map((item, idx) => (
+                {[...dfsContentFeed, ...extendedContentFeed].map((item, idx) => (
                   <motion.div
                     key={idx}
                     className="bg-white rounded-xl p-5 flex gap-5"
