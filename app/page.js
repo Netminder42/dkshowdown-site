@@ -15,7 +15,7 @@ export default function Home() {
         className="relative overflow-hidden w-full"
         style={{
           minHeight: '600px',
-          background: `linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url('https://images.pexels.com/photos/209948/pexels-photo-209948.jpeg?auto=compress&cs=tinysrgb&w=1920') center/cover no-repeat`,
+          background: `linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url('https://images.pexels.com/photos/270085/pexels-photo-270085.jpeg?auto=compress&cs=tinysrgb&w=2000') center/cover no-repeat`,
         }}
       >
         {/* Hero Content */}
