@@ -25,37 +25,42 @@ const heroSlides = [
   },
 ]
 
-// Featured Articles data
+// Featured Articles data - V2.4: Added soft gradient backgrounds
 const featuredArticles = [
   {
     title: "Top NBA Targets for Tonight's Slate",
     author: "Jake Turner",
     timestamp: "2 hours ago",
-    image: "https://picsum.photos/seed/nba1/800/450"
+    image: "https://picsum.photos/seed/nba1/800/450",
+    gradient: "linear-gradient(135deg, #F8FAFC, #ECF1FF)"
   },
   {
     title: "Why This MLB Pitcher Is a Must-Play",
     author: "Maria Vasquez",
     timestamp: "4 hours ago",
-    image: "https://picsum.photos/seed/mlb1/800/450"
+    image: "https://picsum.photos/seed/mlb1/800/450",
+    gradient: "linear-gradient(135deg, #FAF5FF, #EDE9FE)"
   },
   {
     title: "NFL Week 4 Game Stacks: Where the Edge Lives",
     author: "Tom Reynolds",
     timestamp: "5 hours ago",
-    image: "https://picsum.photos/seed/nfl2/800/450"
+    image: "https://picsum.photos/seed/nfl2/800/450",
+    gradient: "linear-gradient(135deg, #FFF7ED, #FFE4C4)"
   },
   {
     title: "3 DFS Mistakes Everyone Still Makes",
     author: "Jake Turner",
     timestamp: "1 day ago",
-    image: "https://picsum.photos/seed/dfs1/800/450"
+    image: "https://picsum.photos/seed/dfs1/800/450",
+    gradient: "linear-gradient(135deg, #F0FDFA, #CCFBF1)"
   },
   {
     title: "This Slate's Most Underpriced Superstar",
     author: "Maria Vasquez",
     timestamp: "1 day ago",
-    image: "https://picsum.photos/seed/nba2/800/450"
+    image: "https://picsum.photos/seed/nba2/800/450",
+    gradient: "linear-gradient(135deg, #FFF1F2, #FCE7F3)"
   },
 ]
 
@@ -87,7 +92,7 @@ const dfsTools = [
   },
 ]
 
-// DFS Picks data
+// DFS Picks data - V2.4: Added sport tags
 const dfsPicks = [
   {
     name: "Jalen Brunson",
@@ -98,7 +103,9 @@ const dfsPicks = [
     salary: 8900,
     value: 5.4,
     ownership: 28,
-    image: "https://picsum.photos/seed/brunson/200/200"
+    image: "https://picsum.photos/seed/brunson/200/200",
+    sport: "NBA",
+    sportColor: "#EF4444"
   },
   {
     name: "Shohei Ohtani",
@@ -109,7 +116,9 @@ const dfsPicks = [
     salary: 5500,
     value: 2.3,
     ownership: 18,
-    image: "https://picsum.photos/seed/ohtani/200/200"
+    image: "https://picsum.photos/seed/ohtani/200/200",
+    sport: "MLB",
+    sportColor: "#16A34A"
   },
   {
     name: "Patrick Mahomes",
@@ -120,7 +129,9 @@ const dfsPicks = [
     salary: 7800,
     value: 3.2,
     ownership: 35,
-    image: "https://picsum.photos/seed/mahomes/200/200"
+    image: "https://picsum.photos/seed/mahomes/200/200",
+    sport: "NFL",
+    sportColor: "#3B82F6"
   },
   {
     name: "Luka Dončić",
@@ -131,7 +142,9 @@ const dfsPicks = [
     salary: 11200,
     value: 4.7,
     ownership: 42,
-    image: "https://picsum.photos/seed/luka/200/200"
+    image: "https://picsum.photos/seed/luka/200/200",
+    sport: "NBA",
+    sportColor: "#EF4444"
   },
 ]
 
@@ -811,10 +824,10 @@ export default function Home() {
                       key={idx}
                       className="flex-none w-full md:w-1/2 lg:w-1/3 rounded-xl overflow-hidden"
                       style={{
-                        background: 'white',
+                        background: article.gradient,
                         boxShadow: `
-                          0 6px 18px rgba(0,0,0,0.14),
-                          0 0 28px rgba(255,106,0,0.55)
+                          0 6px 18px rgba(0,0,0,0.10),
+                          0 0 20px rgba(255,106,0,0.25)
                         `,
                       }}
                       whileHover={{
@@ -822,8 +835,8 @@ export default function Home() {
                         rotateY: 2,
                         rotateX: -2,
                         boxShadow: `
-                          0 8px 24px rgba(0,0,0,0.18),
-                          0 0 35px rgba(255,106,0,0.65)
+                          0 8px 24px rgba(0,0,0,0.12),
+                          0 0 25px rgba(255,106,0,0.35)
                         `
                       }}
                       transition={{ duration: 0.3 }}
@@ -864,7 +877,7 @@ export default function Home() {
                   background: 'white',
                   boxShadow: `
                     0 8px 22px rgba(0,0,0,0.18),
-                    0 0 32px rgba(37,99,235,0.55)
+                    0 0 32px rgba(37,99,235,0.60)
                   `,
                 }}>
                   <div className="flex items-center gap-2 mb-6">
@@ -901,7 +914,7 @@ export default function Home() {
                   background: 'white',
                   boxShadow: `
                     0 8px 22px rgba(0,0,0,0.18),
-                    0 0 32px rgba(249,115,22,0.55)
+                    0 0 32px rgba(249,115,22,0.60)
                   `,
                 }}>
                   <div className="flex items-center gap-2 mb-6">
@@ -938,7 +951,7 @@ export default function Home() {
                   background: 'white',
                   boxShadow: `
                     0 8px 22px rgba(0,0,0,0.18),
-                    0 0 32px rgba(239,68,68,0.55)
+                    0 0 32px rgba(239,68,68,0.60)
                   `,
                 }}>
                   <div className="flex items-center gap-2 mb-6">
@@ -987,15 +1000,15 @@ export default function Home() {
                     style={{
                       background: 'white',
                       boxShadow: `
-                        0 0 45px ${tool.color}55,
+                        0 0 45px ${tool.color}60,
                         0 10px 28px rgba(0,0,0,0.10)
                       `,
                     }}
                     animate={{
                       boxShadow: [
-                        `0 0 45px ${tool.color}55, 0 10px 28px rgba(0,0,0,0.10)`,
-                        `0 0 55px ${tool.color}65, 0 14px 34px rgba(0,0,0,0.14)`,
-                        `0 0 45px ${tool.color}55, 0 10px 28px rgba(0,0,0,0.10)`,
+                        `0 0 45px ${tool.color}60, 0 10px 28px rgba(0,0,0,0.10)`,
+                        `0 0 55px ${tool.color}70, 0 14px 34px rgba(0,0,0,0.14)`,
+                        `0 0 45px ${tool.color}60, 0 10px 28px rgba(0,0,0,0.10)`,
                       ]
                     }}
                     whileHover={{ y: -4, scale: 1.02 }}
@@ -1004,8 +1017,11 @@ export default function Home() {
                     <div className="h-2" style={{ background: tool.color, height: '8px' }} />
                     <div className="p-8">
                       <motion.div
-                        whileHover={{ scale: 1.1, rotate: 5 }}
-                        transition={{ duration: 0.3 }}
+                        animate={{
+                          scale: [1, 1.08, 1],
+                        }}
+                        whileHover={{ scale: 1.15, rotate: 5 }}
+                        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
                       >
                         <tool.icon className="h-16 w-16 mb-6" style={{ color: tool.color }} />
                       </motion.div>
@@ -1074,7 +1090,7 @@ export default function Home() {
                   background: 'white',
                   boxShadow: `
                     0 8px 22px rgba(0,0,0,0.18),
-                    0 0 32px rgba(34,197,94,0.55)
+                    0 0 32px rgba(34,197,94,0.60)
                   `,
                 }}>
                   <div className="flex items-center gap-2 mb-6">
@@ -1102,7 +1118,7 @@ export default function Home() {
                   background: 'white',
                   boxShadow: `
                     0 8px 22px rgba(0,0,0,0.18),
-                    0 0 32px rgba(239,68,68,0.55)
+                    0 0 32px rgba(239,68,68,0.60)
                   `,
                 }}>
                   <div className="flex items-center gap-2 mb-6">
@@ -1130,7 +1146,7 @@ export default function Home() {
                   background: 'white',
                   boxShadow: `
                     0 8px 22px rgba(0,0,0,0.18),
-                    0 0 32px rgba(249,115,22,0.55)
+                    0 0 32px rgba(249,115,22,0.60)
                   `,
                 }}>
                   <div className="flex items-center gap-2 mb-6">
@@ -1158,7 +1174,7 @@ export default function Home() {
                   background: 'white',
                   boxShadow: `
                     0 8px 22px rgba(0,0,0,0.18),
-                    0 0 32px rgba(124,58,237,0.55)
+                    0 0 32px rgba(124,58,237,0.60)
                   `,
                 }}>
                   <div className="flex items-center gap-2 mb-6">
@@ -1178,12 +1194,12 @@ export default function Home() {
               </div>
             </section>
 
-            {/* NEW SECTION - SIM RESULTS PREVIEW - V2.3 */}
+            {/* NEW SECTION - SIM RESULTS PREVIEW - V2.4 */}
             <section className="rounded-xl p-8" style={{
               background: 'linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%)',
               boxShadow: `
                 0 10px 28px rgba(0,0,0,0.25),
-                0 0 40px rgba(124,58,237,0.60)
+                0 0 40px rgba(124,58,237,0.65)
               `,
             }}>
               <h2 className="text-3xl font-extrabold text-white mb-6 text-center">AI Sim Results Preview</h2>
@@ -1229,7 +1245,7 @@ export default function Home() {
               </div>
             </section>
 
-            {/* SECTION C - TODAY'S DFS PICKS - Enhanced (Bigger & More Heroic) */}
+            {/* SECTION C - TODAY'S DFS PICKS - V2.4: Richer gradient + stronger glow */}
             <section>
               <h2 className="text-4xl lg:text-5xl font-extrabold text-[#1E3A8A] mb-12 text-center">
                 Today's DFS Picks
@@ -1241,23 +1257,31 @@ export default function Home() {
                     key={idx}
                     className="rounded-2xl p-10"
                     style={{
-                      background: 'linear-gradient(135deg, #14B8A6 0%, #0D9488 100%)',
+                      background: 'linear-gradient(135deg, #0F766E 0%, #14B8A6 100%)',
                       boxShadow: `
-                        0 8px 22px rgba(0,0,0,0.18),
-                        0 0 35px rgba(20,184,166,0.60)
+                        0 10px 26px rgba(0,0,0,0.25),
+                        0 0 36px rgba(20,184,166,0.65)
                       `,
                     }}
                     animate={{
                       boxShadow: [
-                        `0 8px 22px rgba(0,0,0,0.18), 0 0 35px rgba(20,184,166,0.60)`,
-                        `0 10px 28px rgba(0,0,0,0.22), 0 0 45px rgba(20,184,166,0.70)`,
-                        `0 8px 22px rgba(0,0,0,0.18), 0 0 35px rgba(20,184,166,0.60)`,
+                        `0 10px 26px rgba(0,0,0,0.25), 0 0 36px rgba(20,184,166,0.65)`,
+                        `0 12px 32px rgba(0,0,0,0.28), 0 0 45px rgba(20,184,166,0.75)`,
+                        `0 10px 26px rgba(0,0,0,0.25), 0 0 36px rgba(20,184,166,0.65)`,
                       ]
                     }}
                     whileHover={{ scale: 1.04, y: -6 }}
-                    transition={{ duration: 0.3 }}
+                    transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
                   >
                     <div className="flex flex-col items-center text-center">
+                      <div className="mb-4">
+                        <span
+                          className="inline-block px-3 py-1 rounded-full text-xs font-bold text-white"
+                          style={{ background: pick.sportColor }}
+                        >
+                          {pick.sport}
+                        </span>
+                      </div>
                       <div className="w-32 h-32 rounded-full overflow-hidden mb-5 border-4 border-white shadow-xl">
                         <img src={pick.image} alt={pick.name} className="w-full h-full object-cover" />
                       </div>
@@ -1297,46 +1321,58 @@ export default function Home() {
               </div>
             </section>
 
-            {/* NEW SECTION - DFS CONTENT FEED */}
+            {/* NEW SECTION - DFS CONTENT FEED - V2.4: Light gradients */}
             <section>
               <h2 className="text-4xl lg:text-5xl font-extrabold text-[#1E3A8A] mb-12">
                 DFS Picks & Strategy Feed
               </h2>
 
               <div className="space-y-4">
-                {[...dfsContentFeed, ...extendedContentFeed].map((item, idx) => (
-                  <motion.div
-                    key={idx}
-                    className="bg-white rounded-xl p-5 flex gap-5"
-                    style={{
-                      boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
-                    }}
-                    whileHover={{
-                      boxShadow: '0 6px 18px rgba(0,0,0,0.14)',
-                      x: 4,
-                    }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <div className="w-28 h-28 flex-shrink-0 rounded-lg overflow-hidden">
-                      <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="mb-2">
-                        <span
-                          className="inline-block px-2 py-1 rounded text-xs font-bold text-white"
-                          style={{ background: item.sportColor }}
-                        >
-                          {item.sport}
-                        </span>
+                {[...dfsContentFeed, ...extendedContentFeed].map((item, idx) => {
+                  const gradients = [
+                    'linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 100%)',
+                    'linear-gradient(135deg, #FEFCE8 0%, #FEF3C7 100%)',
+                    'linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%)',
+                    'linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%)',
+                  ]
+                  const gradient = gradients[idx % gradients.length]
+
+                  return (
+                    <motion.div
+                      key={idx}
+                      className="rounded-xl p-5 flex gap-5"
+                      style={{
+                        background: gradient,
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.06)',
+                      }}
+                      whileHover={{
+                        boxShadow: '0 6px 18px rgba(0,0,0,0.10)',
+                        x: 4,
+                      }}
+                      transition={{ duration: 0.2 }}
+                    >
+
+                      <div className="w-28 h-28 flex-shrink-0 rounded-lg overflow-hidden">
+                        <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
                       </div>
-                      <h3 className="text-lg font-extrabold text-[#1E3A8A] mb-2 leading-tight">{item.title}</h3>
-                      <p className="text-sm text-gray-600 mb-3 leading-relaxed">{item.teaser}</p>
-                      <p className="text-xs text-gray-500 font-medium">
-                        {item.author} · {item.time}
-                      </p>
-                    </div>
-                  </motion.div>
-                ))}
+                      <div className="flex-1">
+                        <div className="mb-2">
+                          <span
+                            className="inline-block px-2 py-1 rounded text-xs font-bold text-white"
+                            style={{ background: item.sportColor }}
+                          >
+                            {item.sport}
+                          </span>
+                        </div>
+                        <h3 className="text-lg font-extrabold text-[#1E3A8A] mb-2 leading-tight">{item.title}</h3>
+                        <p className="text-sm text-gray-600 mb-3 leading-relaxed">{item.teaser}</p>
+                        <p className="text-xs text-gray-500 font-medium">
+                          {item.author} · {item.time}
+                        </p>
+                      </div>
+                    </motion.div>
+                  )
+                })}
               </div>
             </section>
 
@@ -1389,7 +1425,7 @@ export default function Home() {
               </div>
             </section>
 
-            {/* SECTION E - DFS STRATEGY VAULT - Enhanced */}
+            {/* SECTION E - DFS STRATEGY VAULT - V2.4: Soft warm gradients */}
             <section>
               <h2 className="text-4xl lg:text-5xl font-extrabold text-[#1E3A8A] mb-12 text-center">
                 DFS Strategy Vault
@@ -1401,33 +1437,40 @@ export default function Home() {
                     key={idx}
                     className="rounded-xl p-8 relative overflow-hidden"
                     style={{
-                      background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 50%, #C2834E 100%)',
+                      background: 'linear-gradient(135deg, #FFF7E6 0%, #FFE3B0 100%)',
                       boxShadow: `
-                        0 0 35px rgba(245,158,11,0.45),
-                        0 10px 25px rgba(0,0,0,0.08)
+                        0 6px 18px rgba(0,0,0,0.10),
+                        0 0 20px rgba(245,158,11,0.25)
                       `,
                     }}
-                    whileHover={{ scale: 1.03, y: -3 }}
+                    whileHover={{
+                      scale: 1.03,
+                      y: -3,
+                      boxShadow: `
+                        0 8px 22px rgba(0,0,0,0.12),
+                        0 0 25px rgba(245,158,11,0.35)
+                      `
+                    }}
                     transition={{ duration: 0.3 }}
                   >
                     <div className="absolute top-4 right-4">
-                      <span className="px-3 py-1 bg-white/20 backdrop-blur-sm text-white text-xs font-bold rounded-full">
+                      <span className="px-3 py-1 bg-[#F59E0B] text-white text-xs font-bold rounded-full shadow-sm">
                         PLAYBOOK
                       </span>
                     </div>
                     <div className="mb-6">
-                      <div className="w-16 h-16 rounded-xl flex items-center justify-center bg-white/90 shadow-lg">
+                      <div className="w-16 h-16 rounded-xl flex items-center justify-center bg-white shadow-lg">
                         <strategy.icon className="h-8 w-8 text-[#F59E0B]" />
                       </div>
                     </div>
-                    <h3 className="text-xl font-extrabold text-white mb-3">{strategy.title}</h3>
-                    <p className="text-white/90 leading-relaxed font-medium">{strategy.description}</p>
+                    <h3 className="text-xl font-extrabold text-[#1E3A8A] mb-3">{strategy.title}</h3>
+                    <p className="text-gray-700 leading-relaxed font-medium">{strategy.description}</p>
                   </motion.div>
                 ))}
               </div>
             </section>
 
-            {/* SECTION F - LATEST STRATEGY - Enhanced */}
+            {/* SECTION F - LATEST STRATEGY - V2.4: Soft purple gradient on video */}
             <section>
               <h2 className="text-4xl lg:text-5xl font-extrabold text-[#1E3A8A] mb-12 text-center">
                 Latest Strategy
@@ -1438,13 +1481,19 @@ export default function Home() {
                 <motion.div
                   className="rounded-xl overflow-hidden cursor-pointer"
                   style={{
-                    background: 'white',
+                    background: 'linear-gradient(135deg, #FAF5FF 0%, #EDE9FE 100%)',
                     boxShadow: `
-                      0 0 40px rgba(139,92,246,0.45),
-                      0 10px 25px rgba(0,0,0,0.12)
+                      0 6px 18px rgba(0,0,0,0.10),
+                      0 0 20px rgba(139,92,246,0.25)
                     `,
                   }}
-                  whileHover={{ scale: 1.02 }}
+                  whileHover={{
+                    scale: 1.02,
+                    boxShadow: `
+                      0 8px 22px rgba(0,0,0,0.12),
+                      0 0 25px rgba(139,92,246,0.35)
+                    `
+                  }}
                   transition={{ duration: 0.3 }}
                 >
                   <div className="relative aspect-video overflow-hidden group">
@@ -1492,27 +1541,33 @@ export default function Home() {
                       author: "Tom Reynolds",
                       time: "1 hour ago",
                       image: "https://picsum.photos/seed/mlb2/400/225",
-                      color: "#EF4444"
+                      gradient: "linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%)"
                     },
                     {
                       title: "NFL DFS Stacking Strategy for Week 4",
                       author: "Jake Turner",
                       time: "2 hours ago",
                       image: "https://picsum.photos/seed/nfl3/400/225",
-                      color: "#8B5CF6"
+                      gradient: "linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%)"
                     },
                   ].map((article, idx) => (
                     <motion.div
                       key={idx}
                       className="rounded-xl overflow-hidden"
                       style={{
-                        background: 'white',
+                        background: article.gradient,
                         boxShadow: `
-                          0 0 30px ${article.color}45,
-                          0 10px 25px rgba(0,0,0,0.08)
+                          0 6px 18px rgba(0,0,0,0.08),
+                          0 0 15px rgba(0,0,0,0.05)
                         `,
                       }}
-                      whileHover={{ scale: 1.02 }}
+                      whileHover={{
+                        scale: 1.02,
+                        boxShadow: `
+                          0 8px 22px rgba(0,0,0,0.10),
+                          0 0 20px rgba(0,0,0,0.08)
+                        `
+                      }}
                       transition={{ duration: 0.3 }}
                     >
                       <div className="flex">
@@ -1607,8 +1662,10 @@ export default function Home() {
               </div>
             </div>
 
-            {/* WIDGET 3 - TRENDING NEWS */}
-            <div className="bg-white rounded-xl p-6 shadow-lg">
+            {/* WIDGET 3 - TRENDING NEWS - V2.4: Light gradient */}
+            <div className="rounded-xl p-6 shadow-lg" style={{
+              background: 'linear-gradient(135deg, #F8FAFC 0%, #EEF2FF 100%)',
+            }}>
               <div className="flex items-center gap-2 mb-6">
                 <FireIcon className="h-6 w-6 text-[#EF4444]" />
                 <h3 className="text-2xl font-extrabold text-[#1E3A8A]">Trending</h3>
@@ -1644,8 +1701,10 @@ export default function Home() {
         {/* END MAIN GRID */}
       </div>
 
-      {/* FREE TRIAL BLOCK - Full Width */}
-      <section className="py-32" style={{ background: '#F3F7FF' }}>
+      {/* FREE TRIAL BLOCK - V2.4: Light blue gradient background */}
+      <section className="py-32" style={{
+        background: 'linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 50%, #BFDBFE 100%)'
+      }}>
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl lg:text-5xl font-extrabold text-[#1E3A8A] mb-6">
             Start your 3-day free trial.
@@ -1657,8 +1716,10 @@ export default function Home() {
           <div
             className="rounded-xl p-10 mb-10 text-left max-w-2xl mx-auto"
             style={{
-              background: 'radial-gradient(circle at center, #D8E9FF 0%, #AFCBFF 90%)',
-              boxShadow: '0 10px 25px rgba(15, 23, 42, 0.10)'
+              background: 'rgba(255, 255, 255, 0.80)',
+              backdropFilter: 'blur(10px)',
+              boxShadow: '0 10px 25px rgba(15, 23, 42, 0.15)',
+              border: '1px solid rgba(255, 255, 255, 0.5)'
             }}
           >
             <ul className="space-y-4">
