@@ -8,9 +8,13 @@ import { SparklesIcon, ChartBarIcon, TrophyIcon, CogIcon } from '@heroicons/reac
 export default function Home() {
   return (
     <div className="min-h-screen bg-[#F9FAFB]">
+      {/* DEPLOYMENT TEST BANNER - v1.1 BUILD ACTIVE */}
+      <div className="bg-gradient-to-r from-green-500 to-blue-500 text-white text-center py-2 text-sm font-bold">
+        ✓ Homepage v1.1 Build Deployed - {new Date().toISOString().slice(0,16)}
+      </div>
       <NavigationNew />
 
-      {/* Hero Section - NFL Action Background */}
+      {/* Hero Section - NFL Action Background - v1.1 Build */}
       <section className="relative overflow-hidden">
         {/* Background Image with Overlay */}
         <div
@@ -19,6 +23,10 @@ export default function Home() {
             backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.15), rgba(0,0,0,0.35)), url('https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=2000&auto=format&fit=crop')`,
           }}
         />
+        {/* Build Version Marker */}
+        <div className="absolute top-2 right-2 text-white/40 text-xs font-mono z-20">
+          v1.1-{new Date().toISOString().slice(0,10)}
+        </div>
 
         {/* Hero Content */}
         <div className="relative z-10 py-24 lg:py-32">

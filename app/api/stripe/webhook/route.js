@@ -3,6 +3,8 @@ import { headers } from "next/headers"
 import { stripe } from "@/lib/stripe"
 import { prisma } from "@/lib/prisma"
 
+export const dynamic = 'force-dynamic'
+
 export async function POST(req) {
   const body = await req.text()
   const signature = headers().get("stripe-signature")
