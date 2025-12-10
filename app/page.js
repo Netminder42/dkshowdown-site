@@ -344,16 +344,18 @@ export default function Home() {
           <div className="overflow-hidden" ref={emblaRef}>
             <div className="flex gap-6">
               {featuredArticles.map((article, idx) => (
-                <div
+                <motion.div
                   key={idx}
-                  className="flex-none w-full md:w-1/2 lg:w-1/3 rounded-xl overflow-hidden transition-all duration-300 hover:scale-[1.02]"
+                  className="flex-none w-full md:w-1/2 lg:w-1/3 rounded-xl overflow-hidden"
                   style={{
                     background: 'white',
                     boxShadow: `
-                      0 0 30px rgba(255,159,67,0.15),
-                      0 10px 25px rgba(0,0,0,0.12)
+                      0 6px 16px rgba(0,0,0,0.12),
+                      0 0 22px rgba(255,159,67,0.45)
                     `,
                   }}
+                  whileHover={{ scale: 1.02 }}
+                  transition={{ duration: 0.3 }}
                 >
                   <div className="aspect-video overflow-hidden">
                     <img src={article.image} alt={article.title} className="w-full h-full object-cover" />
@@ -372,7 +374,7 @@ export default function Home() {
                       {article.author} · {article.timestamp}
                     </p>
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>
@@ -390,7 +392,7 @@ export default function Home() {
             {dfsTools.map((tool, idx) => (
               <motion.div
                 key={idx}
-                className="rounded-xl overflow-hidden transition-all duration-300 hover:scale-[1.02]"
+                className="rounded-xl overflow-hidden"
                 style={{
                   background: 'white',
                   boxShadow: `
@@ -405,6 +407,7 @@ export default function Home() {
                     `0 0 40px ${tool.color}45, 0 10px 25px rgba(0,0,0,0.08)`,
                   ]
                 }}
+                whileHover={{ y: -3, scale: 1.01 }}
                 transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
               >
                 <div className="h-2" style={{ background: tool.color }} />
@@ -430,15 +433,16 @@ export default function Home() {
             {dfsPicks.map((pick, idx) => (
               <motion.div
                 key={idx}
-                className="rounded-xl p-8 transition-all duration-300 hover:scale-[1.02] hover:-translate-y-2"
+                className="rounded-xl p-8"
                 style={{
                   background: 'linear-gradient(135deg, #14B8A6 0%, #0D9488 100%)',
                   boxShadow: `
-                    0 0 35px rgba(20,184,166,0.35),
-                    0 10px 25px rgba(0,0,0,0.12)
+                    0 6px 18px rgba(0,0,0,0.15),
+                    0 0 24px rgba(20,184,166,0.45)
                   `,
                 }}
-                whileHover={{ y: -8 }}
+                whileHover={{ scale: 1.03, y: -4 }}
+                transition={{ duration: 0.3 }}
               >
                 <div className="flex flex-col items-center text-center">
                   <div className="w-24 h-24 rounded-full overflow-hidden mb-4 border-4 border-white">
@@ -490,16 +494,24 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {analysts.map((analyst, idx) => (
-              <div
+              <motion.div
                 key={idx}
-                className="rounded-xl p-8 text-center transition-all duration-300 hover:scale-[1.02]"
+                className="rounded-xl p-8 text-center"
                 style={{
                   background: 'white',
                   boxShadow: `
-                    0 0 35px rgba(16,185,129,0.25),
+                    0 0 35px rgba(16,185,129,0.45),
                     0 10px 25px rgba(0,0,0,0.08)
                   `,
                 }}
+                whileHover={{
+                  scale: 1.02,
+                  boxShadow: `
+                    0 0 40px rgba(16,185,129,0.55),
+                    0 12px 30px rgba(0,0,0,0.12)
+                  `
+                }}
+                transition={{ duration: 0.3 }}
               >
                 <div className="w-32 h-32 rounded-full overflow-hidden mx-auto mb-6 border-4 border-[#10B981]">
                   <img src={analyst.image} alt={analyst.name} className="w-full h-full object-cover" />
@@ -507,7 +519,7 @@ export default function Home() {
                 <h3 className="text-2xl font-extrabold text-[#1E3A8A] mb-2">{analyst.name}</h3>
                 <p className="text-sm font-bold text-[#10B981] mb-4">{analyst.role}</p>
                 <p className="text-gray-700 leading-relaxed font-medium">{analyst.bio}</p>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -522,16 +534,18 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {strategyVault.map((strategy, idx) => (
-              <div
+              <motion.div
                 key={idx}
-                className="rounded-xl p-8 transition-all duration-300 hover:scale-[1.02] hover:-translate-y-2"
+                className="rounded-xl p-8"
                 style={{
                   background: 'white',
                   boxShadow: `
-                    0 0 35px rgba(245,158,11,0.35),
+                    0 0 35px rgba(245,158,11,0.45),
                     0 10px 25px rgba(0,0,0,0.08)
                   `,
                 }}
+                whileHover={{ scale: 1.02, y: -2 }}
+                transition={{ duration: 0.3 }}
               >
                 <div className="mb-6">
                   <div className="w-16 h-16 rounded-xl flex items-center justify-center" style={{ background: '#F59E0B' }}>
@@ -540,7 +554,7 @@ export default function Home() {
                 </div>
                 <h3 className="text-xl font-extrabold text-[#1E3A8A] mb-3">{strategy.title}</h3>
                 <p className="text-gray-700 leading-relaxed font-medium">{strategy.description}</p>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -555,15 +569,17 @@ export default function Home() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Large Video Card */}
-            <div
-              className="rounded-xl overflow-hidden transition-all duration-300 hover:scale-[1.02] cursor-pointer"
+            <motion.div
+              className="rounded-xl overflow-hidden cursor-pointer"
               style={{
                 background: 'white',
                 boxShadow: `
-                  0 0 40px rgba(139,92,246,0.35),
+                  0 0 40px rgba(139,92,246,0.45),
                   0 10px 25px rgba(0,0,0,0.12)
                 `,
               }}
+              whileHover={{ scale: 1.02 }}
+              transition={{ duration: 0.3 }}
             >
               <div className="relative aspect-video overflow-hidden bg-gray-900 group">
                 <img
@@ -583,7 +599,7 @@ export default function Home() {
                 </h3>
                 <p className="text-sm text-gray-600 font-medium">Jake Turner · 30 minutes ago</p>
               </div>
-            </div>
+            </motion.div>
 
             {/* Two Stacked Article Cards */}
             <div className="space-y-6">
@@ -603,16 +619,18 @@ export default function Home() {
                   color: "#8B5CF6"
                 },
               ].map((article, idx) => (
-                <div
+                <motion.div
                   key={idx}
-                  className="rounded-xl overflow-hidden transition-all duration-300 hover:scale-[1.02]"
+                  className="rounded-xl overflow-hidden"
                   style={{
                     background: 'white',
                     boxShadow: `
-                      0 0 30px ${article.color}35,
+                      0 0 30px ${article.color}45,
                       0 10px 25px rgba(0,0,0,0.08)
                     `,
                   }}
+                  whileHover={{ scale: 1.02 }}
+                  transition={{ duration: 0.3 }}
                 >
                   <div className="flex">
                     <div className="w-40 flex-shrink-0">
@@ -623,7 +641,7 @@ export default function Home() {
                       <p className="text-xs text-gray-600 font-medium">{article.author} · {article.time}</p>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>
@@ -669,23 +687,27 @@ export default function Home() {
             </ul>
           </div>
 
-          <Link
-            href="/auth/signup"
-            className="inline-block bg-[#00C853] hover:bg-[#00B248] text-white font-bold px-14 py-5 rounded-lg transition-all duration-300 text-lg"
-            style={{
-              boxShadow: '0 12px 30px rgba(0, 200, 83, 0.25)'
+          <motion.div
+            className="inline-block"
+            animate={{
+              boxShadow: [
+                '0 0 30px rgba(0, 200, 83, 0.45)',
+                '0 0 40px rgba(0, 200, 83, 0.55)',
+                '0 0 30px rgba(0, 200, 83, 0.45)',
+              ]
             }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.boxShadow = '0 15px 40px rgba(0, 200, 83, 0.35)'
-              e.currentTarget.style.transform = 'translateY(-2px)'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.boxShadow = '0 12px 30px rgba(0, 200, 83, 0.25)'
-              e.currentTarget.style.transform = 'translateY(0)'
-            }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
           >
-            Start 3-Day Free Trial
-          </Link>
+            <Link
+              href="/auth/signup"
+              className="inline-block bg-[#00C853] hover:bg-[#00B248] text-white font-bold px-14 py-5 rounded-lg text-lg"
+              style={{
+                boxShadow: '0 12px 30px rgba(0, 200, 83, 0.45)'
+              }}
+            >
+              Start 3-Day Free Trial
+            </Link>
+          </motion.div>
         </div>
       </section>
 
