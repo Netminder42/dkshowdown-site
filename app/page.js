@@ -17,7 +17,11 @@ export default function Home() {
       <NavigationNew />
 
       {/* Hero Section - NFL Action Background - v1.1 Build */}
-      <section className="relative overflow-hidden min-h-[600px] flex items-center">
+      <section className="relative overflow-hidden min-h-[600px] flex items-center" style={{ border: '10px solid red' }}>
+        {/* TEST MARKER - YOU SHOULD SEE RED BORDER */}
+        <div className="absolute top-20 left-1/2 transform -translate-x-1/2 bg-yellow-400 text-black px-8 py-4 text-2xl font-bold z-50 border-4 border-black">
+          ⚠️ HERO SECTION IS RENDERING ⚠️
+        </div>
         {/* Background Image with Overlay */}
         <div
           className="absolute inset-0 bg-cover bg-center"
