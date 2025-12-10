@@ -8,6 +8,10 @@ import { SparklesIcon, ChartBarIcon, TrophyIcon, CogIcon } from '@heroicons/reac
 export default function Home() {
   return (
     <div className="min-h-screen bg-[#F9FAFB]">
+      {/* DEPLOYMENT TEST BANNER - v1.1 BUILD ACTIVE */}
+      <div className="bg-gradient-to-r from-green-500 to-blue-500 text-white text-center py-2 text-sm font-bold">
+        ✓ Homepage v1.1 Build Deployed - {new Date().toISOString().slice(0,16)}
+      </div>
       <NavigationNew />
 
       {/* Hero Section - NFL Action Background - v1.1 Build */}
