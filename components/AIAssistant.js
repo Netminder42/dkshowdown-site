@@ -24,16 +24,21 @@ export default function AIAssistant() {
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
-            whileHover={{ scale: 1.1 }}
+            whileHover={{ scale: 1.08 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setIsOpen(true)}
-            className="fixed bottom-6 right-6 z-50 bg-[#00C853] hover:bg-[#00B248] text-white p-4 rounded-full shadow-xl border-2 border-white group"
+            className="fixed z-50 bg-[#00C853] hover:bg-[#00B248] text-white p-5 rounded-full border-2 border-white group"
+            style={{
+              bottom: '20px',
+              right: '20px',
+              boxShadow: '0 8px 18px rgba(0, 200, 83, 0.30)',
+            }}
             aria-label="Open LineupIQ Assistant"
           >
             <SparklesIcon className="h-7 w-7" />
 
             {/* Hover Label */}
-            <span className="absolute bottom-full right-0 mb-2 px-3 py-1 bg-gray-900 text-white text-sm rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition pointer-events-none">
+            <span className="absolute bottom-full right-0 mb-3 px-4 py-2 bg-gray-900 text-white text-sm font-semibold rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition pointer-events-none shadow-lg">
               LineupIQ Assistant
             </span>
           </motion.button>
@@ -48,16 +53,21 @@ export default function AIAssistant() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="fixed bottom-6 right-6 z-50 w-[400px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl border border-gray-200"
+            className="fixed z-50 w-[420px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl border border-gray-200"
+            style={{
+              bottom: '20px',
+              right: '20px',
+              boxShadow: '0 15px 40px rgba(15, 23, 42, 0.20)',
+            }}
           >
             {/* Header */}
-            <div className="bg-[#1E3A8A] px-6 py-4 rounded-t-2xl flex items-center justify-between">
+            <div className="bg-[#1E3A8A] px-6 py-5 rounded-t-2xl flex items-center justify-between">
               <div>
-                <h3 className="text-white font-bold text-lg flex items-center">
-                  <SparklesIcon className="h-5 w-5 mr-2" />
+                <h3 className="text-white font-extrabold text-lg flex items-center">
+                  <SparklesIcon className="h-6 w-6 mr-2" />
                   LineupIQ Assistant
                 </h3>
-                <p className="text-blue-200 text-xs mt-1">
+                <p className="text-blue-200 text-xs mt-1 font-medium">
                   Your DFS guide. Live AI coming soon.
                 </p>
               </div>
@@ -66,7 +76,7 @@ export default function AIAssistant() {
                 className="text-white hover:bg-white/10 p-2 rounded-lg transition"
                 aria-label="Close"
               >
-                <XMarkIcon className="h-5 w-5" />
+                <XMarkIcon className="h-6 w-6" />
               </button>
             </div>
 
@@ -74,13 +84,13 @@ export default function AIAssistant() {
             <div className="p-6 space-y-4">
               {/* Static Message */}
               <div
-                className="rounded-lg p-4"
+                className="rounded-xl p-5"
                 style={{
                   background: 'radial-gradient(circle at center, #D8E9FF 0%, #AFCBFF 90%)',
-                  boxShadow: '0 2px 8px rgba(15, 23, 42, 0.08)'
+                  boxShadow: '0 4px 12px rgba(15, 23, 42, 0.08)'
                 }}
               >
-                <p className="text-[#111827] text-sm leading-relaxed">
+                <p className="text-[#111827] text-sm leading-relaxed font-medium">
                   I'll help you choose slates, run sims, and build sharper lineups once the backend is connected.
                 </p>
               </div>
@@ -92,7 +102,7 @@ export default function AIAssistant() {
                     key={idx}
                     href={action.href}
                     onClick={() => setIsOpen(false)}
-                    className="block w-full text-left px-4 py-3 bg-white hover:bg-[#E0F2FE] text-gray-700 hover:text-[#1E3A8A] border border-gray-200 hover:border-[#7DD3FC] rounded-lg transition text-sm font-medium"
+                    className="block w-full text-left px-4 py-3 bg-[#F9FAFB] hover:bg-[#E0F2FE] text-gray-700 hover:text-[#1E3A8A] border border-gray-200 hover:border-[#7DD3FC] rounded-lg transition-all text-sm font-semibold"
                   >
                     {action.label}
                   </Link>
@@ -105,7 +115,7 @@ export default function AIAssistant() {
                   type="text"
                   placeholder="AI responses coming soon."
                   disabled
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-400 cursor-not-allowed"
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-400 cursor-not-allowed font-medium"
                 />
               </div>
             </div>
