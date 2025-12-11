@@ -7,62 +7,6 @@ import Link from 'next/link'
 import { BeakerIcon, ChartBarIcon, BoltIcon, TrophyIcon, SparklesIcon, PlayIcon, LockClosedIcon, CheckCircleIcon, FireIcon, ClockIcon } from '@heroicons/react/24/outline'
 import { motion } from 'framer-motion'
 
-// Mock data for slate overview
-const mockSlateOverview = {
-  games: 11,
-  highestTotal: { teams: 'BUF @ KC', total: 52.5 },
-  highestScoring: { team: 'BUF', projection: 28.4 },
-  slateType: 'Balanced slate',
-  paceIndicator: 'High-scoring, volatile slate'
-}
-
-// Mock data for top stacks
-const mockStacks = [
-  {
-    team: 'BUF',
-    type: 'Primary Stack: QB + WR + WR',
-    projection: 56.2,
-    ownership: 27,
-    leverage: 'High',
-    bustRisk: 'Medium'
-  },
-  {
-    team: 'KC',
-    type: 'Bring-back Stack: QB + TE',
-    projection: 48.6,
-    ownership: 32,
-    leverage: 'Medium',
-    bustRisk: 'Low'
-  },
-  {
-    team: 'SF',
-    type: 'Secondary Stack: RB + WR',
-    projection: 42.8,
-    ownership: 18,
-    leverage: 'High',
-    bustRisk: 'Medium'
-  }
-]
-
-// Mock data for key plays
-const mockCorePlays = [
-  { name: 'Patrick Mahomes', team: 'KC', position: 'QB', projection: 24.6, salary: 7800, ownership: 35 },
-  { name: 'Christian McCaffrey', team: 'SF', position: 'RB', projection: 22.4, salary: 9200, ownership: 38 },
-  { name: 'Tyreek Hill', team: 'MIA', position: 'WR', projection: 18.6, salary: 8800, ownership: 31 }
-]
-
-const mockValuePlays = [
-  { name: 'Jahmyr Gibbs', team: 'DET', position: 'RB', projection: 18.4, salary: 5800, ownership: 22 },
-  { name: 'Amon-Ra St. Brown', team: 'DET', position: 'WR', projection: 15.4, salary: 7200, ownership: 19 },
-  { name: 'Brock Purdy', team: 'SF', position: 'QB', projection: 21.2, salary: 6400, ownership: 14 }
-]
-
-const mockLeveragePlays = [
-  { name: 'Desmond Bane', team: 'MEM', position: 'SG', projection: 34.2, salary: 6400, ownership: 12 },
-  { name: 'Rachaad White', team: 'TB', position: 'RB', projection: 14.8, salary: 5200, ownership: 8 },
-  { name: 'DeVonta Smith', team: 'PHI', position: 'WR', projection: 14.2, salary: 6400, ownership: 9 }
-]
-
 export default function SimEngine() {
   const [selectedSport, setSelectedSport] = useState('NFL')
   const [selectedSlate, setSelectedSlate] = useState('Main Slate')
@@ -71,15 +15,44 @@ export default function SimEngine() {
   const [stackAggression, setStackAggression] = useState(50)
   const [riskLevel, setRiskLevel] = useState(50)
   const [simIntensity, setSimIntensity] = useState('Standard')
-  const [simStatus, setSimStatus] = useState('idle') // 'idle', 'running', 'complete'
+  const [simStatus, setSimStatus] = useState('idle') // 'idle', 'running', 'complete', 'error'
+  const [simResult, setSimResult] = useState(null)
+  const [error, setError] = useState(null)
   const [activeTab, setActiveTab] = useState('core')
 
-  const handleRunSim = () => {
+  const handleRunSim = async () => {
     setSimStatus('running')
-    // Simulate running a sim
-    setTimeout(() => {
+    setError(null)
+
+    try {
+      const response = await fetch('/api/sim/run', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          sport: selectedSport,
+          site: selectedSite === 'DraftKings' ? 'DK' : 'FD',
+          slate: selectedSlate,
+          leverageBias: leverageBias / 100,
+          stackAggressiveness: stackAggression / 100,
+          riskLevel: riskLevel / 100,
+          simIntensity: simIntensity.toLowerCase()
+        })
+      })
+
+      if (!response.ok) {
+        throw new Error('Simulation failed')
+      }
+
+      const data = await response.json()
+      setSimResult(data)
       setSimStatus('complete')
-    }, 3000)
+    } catch (err) {
+      console.error('Sim error:', err)
+      setError('Something went wrong running this sim. Please try again.')
+      setSimStatus('error')
+    }
   }
 
   return (
@@ -287,8 +260,15 @@ export default function SimEngine() {
               </section>
             )}
 
+            {/* ERROR STATE */}
+            {simStatus === 'error' && (
+              <section className="bg-red-50 rounded-xl p-8 border-2 border-red-200 text-center">
+                <p className="text-red-800 font-bold text-lg">{error}</p>
+              </section>
+            )}
+
             {/* RESULTS AREA - COMPLETE */}
-            {simStatus === 'complete' && (
+            {simStatus === 'complete' && simResult && (
               <>
                 {/* SLATE OVERVIEW */}
                 <section className="bg-white rounded-xl p-8 shadow-sm">
@@ -297,25 +277,27 @@ export default function SimEngine() {
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
                     <div className="p-4 rounded-lg bg-blue-50 border-2 border-blue-200">
                       <p className="text-sm font-semibold text-gray-600 mb-1">Games</p>
-                      <p className="text-3xl font-extrabold text-[#1E3A8A]">{mockSlateOverview.games}</p>
+                      <p className="text-3xl font-extrabold text-[#1E3A8A]">{simResult.slateOverview.numGames}</p>
                     </div>
                     <div className="p-4 rounded-lg bg-green-50 border-2 border-green-200">
                       <p className="text-sm font-semibold text-gray-600 mb-1">Highest Total Game</p>
-                      <p className="text-lg font-extrabold text-[#1E3A8A]">{mockSlateOverview.highestTotal.teams}</p>
-                      <p className="text-sm text-gray-600">{mockSlateOverview.highestTotal.total}</p>
+                      <p className="text-lg font-extrabold text-[#1E3A8A]">
+                        {simResult.slateOverview.highestTotalGame.awayTeam} @ {simResult.slateOverview.highestTotalGame.homeTeam}
+                      </p>
+                      <p className="text-sm text-gray-600">{simResult.slateOverview.highestTotalGame.total}</p>
                     </div>
                     <div className="p-4 rounded-lg bg-purple-50 border-2 border-purple-200">
                       <p className="text-sm font-semibold text-gray-600 mb-1">Top Scoring Team</p>
-                      <p className="text-lg font-extrabold text-[#1E3A8A]">{mockSlateOverview.highestScoring.team}</p>
-                      <p className="text-sm text-gray-600">{mockSlateOverview.highestScoring.projection} pts</p>
+                      <p className="text-lg font-extrabold text-[#1E3A8A]">{simResult.slateOverview.highestProjectedTeam.team}</p>
+                      <p className="text-sm text-gray-600">{simResult.slateOverview.highestProjectedTeam.teamTotal} pts</p>
                     </div>
                     <div className="p-4 rounded-lg bg-orange-50 border-2 border-orange-200">
                       <p className="text-sm font-semibold text-gray-600 mb-1">Slate Type</p>
-                      <p className="text-sm font-extrabold text-[#1E3A8A]">{mockSlateOverview.slateType}</p>
+                      <p className="text-sm font-extrabold text-[#1E3A8A]">{simResult.slateOverview.slateTypeLabel}</p>
                     </div>
                     <div className="p-4 rounded-lg bg-red-50 border-2 border-red-200 md:col-span-2">
-                      <p className="text-sm font-semibold text-gray-600 mb-1">Pace/Upside</p>
-                      <p className="text-sm font-extrabold text-[#1E3A8A]">{mockSlateOverview.paceIndicator}</p>
+                      <p className="text-sm font-semibold text-gray-600 mb-1">Notes</p>
+                      <p className="text-sm font-extrabold text-[#1E3A8A]">{simResult.slateOverview.notes[0]}</p>
                     </div>
                   </div>
                 </section>
@@ -325,9 +307,9 @@ export default function SimEngine() {
                   <h2 className="text-3xl font-extrabold text-[#1E3A8A] mb-6">Top Stacks</h2>
 
                   <div className="space-y-4">
-                    {mockStacks.map((stack, idx) => (
+                    {simResult.topStacks.map((stack, idx) => (
                       <motion.div
-                        key={idx}
+                        key={stack.id}
                         className="p-6 rounded-xl border-2 border-gray-200 hover:border-[#1E3A8A] transition"
                         whileHover={{ scale: 1.02 }}
                       >
@@ -336,13 +318,14 @@ export default function SimEngine() {
                             <div className="flex items-center gap-3 mb-2">
                               <span className="text-2xl font-extrabold text-[#1E3A8A]">{stack.team}</span>
                               <span className="px-3 py-1 bg-blue-100 text-blue-800 text-xs font-bold rounded-full">
-                                {stack.leverage} Leverage
+                                {stack.leverageLabel} Leverage
                               </span>
                             </div>
                             <p className="text-sm font-semibold text-gray-600">{stack.type}</p>
+                            <p className="text-xs text-gray-500 mt-1">{stack.description}</p>
                           </div>
                           <div className="text-right">
-                            <p className="text-2xl font-extrabold text-[#00C853]">{stack.projection} pts</p>
+                            <p className="text-2xl font-extrabold text-[#00C853]">{stack.projection.toFixed(1)} pts</p>
                             <p className="text-xs text-gray-500">Projection</p>
                           </div>
                         </div>
@@ -350,11 +333,11 @@ export default function SimEngine() {
                         <div className="grid grid-cols-2 gap-4 mb-4">
                           <div>
                             <p className="text-xs text-gray-500">Ownership</p>
-                            <p className="text-lg font-bold text-gray-800">{stack.ownership}%</p>
+                            <p className="text-lg font-bold text-gray-800">{stack.combinedOwnership.toFixed(1)}%</p>
                           </div>
                           <div>
                             <p className="text-xs text-gray-500">Bust Risk</p>
-                            <p className="text-lg font-bold text-gray-800">{stack.bustRisk}</p>
+                            <p className="text-lg font-bold text-gray-800">{stack.bustRiskLabel}</p>
                           </div>
                         </div>
 
@@ -426,14 +409,14 @@ export default function SimEngine() {
                         </tr>
                       </thead>
                       <tbody>
-                        {(activeTab === 'core' ? mockCorePlays : activeTab === 'value' ? mockValuePlays : mockLeveragePlays).map((player, idx) => (
-                          <tr key={idx} className="border-b border-gray-100 hover:bg-gray-50 transition">
+                        {simResult.keyPlays[activeTab].map((player) => (
+                          <tr key={player.id} className="border-b border-gray-100 hover:bg-gray-50 transition">
                             <td className="py-4 px-4 font-bold text-[#1E3A8A]">{player.name}</td>
                             <td className="py-4 px-4 text-gray-700 font-semibold">{player.team}</td>
                             <td className="py-4 px-4 text-gray-700 font-semibold">{player.position}</td>
-                            <td className="py-4 px-4 text-right font-bold text-gray-800">{player.projection}</td>
+                            <td className="py-4 px-4 text-right font-bold text-gray-800">{player.projection.toFixed(1)}</td>
                             <td className="py-4 px-4 text-right font-bold text-gray-800">${player.salary}</td>
-                            <td className="py-4 px-4 text-right font-bold text-gray-800">{player.ownership}%</td>
+                            <td className="py-4 px-4 text-right font-bold text-gray-800">{player.ownership.toFixed(1)}%</td>
                           </tr>
                         ))}
                       </tbody>
@@ -473,8 +456,8 @@ export default function SimEngine() {
 
               <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 mb-4">
                 <p className="text-white text-sm leading-relaxed">
-                  {simStatus === 'complete'
-                    ? "This looks like a balanced slate with one clear anchor game. Ownership is condensing on BUF-KC; leverage opportunities appear around SF."
+                  {simStatus === 'complete' && simResult
+                    ? `${simResult.slateOverview.slateTypeLabel}. ${simResult.slateOverview.notes[0]}`
                     : "Run a simulation to get LineupIQ's analysis of tonight's slate shape and edge opportunities."}
                 </p>
               </div>
@@ -508,17 +491,31 @@ export default function SimEngine() {
                 <div>
                   <p className="text-xs text-gray-500">Last Run</p>
                   <p className="text-sm font-bold text-gray-800">
-                    {simStatus === 'complete' ? 'Just now' : 'Not run yet'}
+                    {simStatus === 'complete' && simResult
+                      ? new Date(simResult.meta.runTimestamp).toLocaleTimeString()
+                      : 'Not run yet'}
                   </p>
                 </div>
                 <div>
                   <p className="text-xs text-gray-500">Status</p>
                   <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold ${
-                    simStatus === 'complete' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'
+                    simStatus === 'complete' ? 'bg-green-100 text-green-800' :
+                    simStatus === 'running' ? 'bg-yellow-100 text-yellow-800' :
+                    simStatus === 'error' ? 'bg-red-100 text-red-800' :
+                    'bg-gray-100 text-gray-600'
                   }`}>
-                    {simStatus === 'complete' ? 'Complete' : 'Not Run Yet'}
+                    {simStatus === 'complete' ? 'Complete' :
+                     simStatus === 'running' ? 'Running...' :
+                     simStatus === 'error' ? 'Error' :
+                     'Not Run Yet'}
                   </span>
                 </div>
+                {simStatus === 'complete' && simResult && (
+                  <div>
+                    <p className="text-xs text-gray-500">Sim Intensity</p>
+                    <p className="text-sm font-bold text-gray-800 capitalize">{simResult.meta.simIntensity}</p>
+                  </div>
+                )}
               </div>
             </div>
 
