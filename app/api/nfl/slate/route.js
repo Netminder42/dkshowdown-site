@@ -1,9 +1,354 @@
 import { NextResponse } from 'next/server'
 
 // ============================================================
-// NFL SLATE HUB API - V1.0
-// Comprehensive data generators for NFL slate research
+// NFL SLATE HUB API - V1.1
+// Premium NFL research center data generators
 // ============================================================
+
+// Generate player carousel images for hero
+function generatePlayerCarousel() {
+  return [
+    {
+      id: 1,
+      name: 'Patrick Mahomes',
+      team: 'KC',
+      position: 'QB',
+      imageUrl: '/images/nfl/mahomes-action.jpg',
+      imageAlt: 'Patrick Mahomes throwing touchdown pass',
+      caption: 'Elite QB1 in high-total game environment'
+    },
+    {
+      id: 2,
+      name: 'Christian McCaffrey',
+      team: 'SF',
+      position: 'RB',
+      imageUrl: '/images/nfl/cmc-action.jpg',
+      imageAlt: 'Christian McCaffrey breaking tackles',
+      caption: 'Bell-cow RB with elite PPR upside'
+    },
+    {
+      id: 3,
+      name: 'CeeDee Lamb',
+      team: 'DAL',
+      position: 'WR',
+      imageUrl: '/images/nfl/lamb-action.jpg',
+      imageAlt: 'CeeDee Lamb catching deep ball',
+      caption: 'WR1 with 30%+ target share dominance'
+    }
+  ]
+}
+
+// Generate season stats for key players
+function generateSeasonStats() {
+  return [
+    {
+      id: 1,
+      name: 'Patrick Mahomes',
+      team: 'KC',
+      position: 'QB',
+      headshot: '🏈',
+      fantasyPPG: 23.4,
+      passingYPG: 287.3,
+      passingTDs: 24,
+      rushingYPG: 18.2,
+      interceptions: 8,
+      completionPct: 68.4,
+      redZoneAttempts: 52,
+      efficiencyMetric: '8.2 YPA'
+    },
+    {
+      id: 2,
+      name: 'Christian McCaffrey',
+      team: 'SF',
+      position: 'RB',
+      headshot: '🏈',
+      fantasyPPG: 24.8,
+      rushingYPG: 98.2,
+      receivingYPG: 42.1,
+      totalTDs: 16,
+      targets: 68,
+      redZoneTouches: 48,
+      snapsPct: 78,
+      efficiencyMetric: '5.2 YPC'
+    },
+    {
+      id: 3,
+      name: 'CeeDee Lamb',
+      team: 'DAL',
+      position: 'WR',
+      headshot: '🏈',
+      fantasyPPG: 19.2,
+      receivingYPG: 96.4,
+      targets: 142,
+      receptions: 98,
+      TDs: 11,
+      targetShare: 31.2,
+      redZoneTargets: 24,
+      efficiencyMetric: '12.8 Y/R'
+    },
+    {
+      id: 4,
+      name: "De'Von Achane",
+      team: 'MIA',
+      position: 'RB',
+      headshot: '🏈',
+      fantasyPPG: 18.6,
+      rushingYPG: 84.2,
+      receivingYPG: 28.4,
+      totalTDs: 10,
+      targets: 42,
+      redZoneTouches: 32,
+      snapsPct: 64,
+      efficiencyMetric: '6.8 YPC'
+    },
+    {
+      id: 5,
+      name: 'Amon-Ra St. Brown',
+      team: 'DET',
+      position: 'WR',
+      headshot: '🏈',
+      fantasyPPG: 17.8,
+      receivingYPG: 88.2,
+      targets: 128,
+      receptions: 94,
+      TDs: 9,
+      targetShare: 28.4,
+      redZoneTargets: 18,
+      efficiencyMetric: '11.2 Y/R'
+    },
+    {
+      id: 6,
+      name: 'Travis Kelce',
+      team: 'KC',
+      position: 'TE',
+      headshot: '🏈',
+      fantasyPPG: 12.4,
+      receivingYPG: 64.2,
+      targets: 86,
+      receptions: 62,
+      TDs: 6,
+      targetShare: 18.2,
+      redZoneTargets: 14,
+      efficiencyMetric: '10.4 Y/R'
+    }
+  ]
+}
+
+// Generate game logs for key players (last 5 games)
+function generateGameLogs() {
+  return {
+    'Patrick Mahomes': [
+      { week: 13, fp: 28.4, snaps: 100, targets: 0, attempts: 38, yards: 342, tds: 3, note: 'Elite efficiency vs blitz' },
+      { week: 12, fp: 22.6, snaps: 100, targets: 0, attempts: 32, yards: 268, tds: 2, note: 'Road game, moderate volume' },
+      { week: 11, fp: 26.8, snaps: 100, targets: 0, attempts: 36, yards: 312, tds: 3, note: 'Shootout environment' },
+      { week: 10, fp: 19.2, snaps: 100, targets: 0, attempts: 28, yards: 224, tds: 1, note: 'Blowout, limited volume' },
+      { week: 9, fp: 24.2, snaps: 100, targets: 0, attempts: 34, yards: 298, tds: 2, note: 'Strong home performance' }
+    ],
+    'Christian McCaffrey': [
+      { week: 13, fp: 28.2, snaps: 78, targets: 8, touches: 26, yards: 190, tds: 2, note: 'Bell-cow workload' },
+      { week: 12, fp: 24.8, snaps: 72, targets: 6, touches: 22, yards: 168, tds: 1, note: 'Consistent usage' },
+      { week: 11, fp: 26.2, snaps: 76, targets: 7, touches: 24, yards: 182, tds: 2, note: 'Elite PPR floor' },
+      { week: 10, fp: 26.4, snaps: 74, targets: 9, touches: 25, yards: 186, tds: 1, note: 'Pass-game involved' },
+      { week: 9, fp: 22.8, snaps: 68, targets: 5, touches: 20, yards: 154, tds: 1, note: 'Ankle injury concern' }
+    ],
+    'CeeDee Lamb': [
+      { week: 13, fp: 19.8, snaps: 96, targets: 12, touches: 0, yards: 128, tds: 1, note: 'Elite target share' },
+      { week: 12, fp: 18.4, snaps: 94, targets: 10, touches: 0, yards: 114, tds: 1, note: 'Primary red zone option' },
+      { week: 11, fp: 20.2, snaps: 98, targets: 13, touches: 0, yards: 136, tds: 1, note: 'WR1 volume secure' },
+      { week: 10, fp: 17.6, snaps: 92, targets: 9, touches: 0, yards: 98, tds: 1, note: 'Tough coverage matchup' },
+      { week: 9, fp: 19.8, snaps: 96, targets: 11, touches: 0, yards: 124, tds: 1, note: 'Consistent production' }
+    ]
+  }
+}
+
+// Generate matchup intelligence (detailed game breakdowns)
+function generateMatchupIntelligence() {
+  return [
+    {
+      id: 1,
+      homeTeam: 'KC',
+      awayTeam: 'BUF',
+      vegasTotal: 52.5,
+      pace: 'Fast',
+      homePassRate: 62,
+      awayPassRate: 64,
+      defVsQB: { home: 'C', away: 'B' },
+      defVsRB: { home: 'B', away: 'C' },
+      defVsWR: { home: 'A', away: 'B' },
+      defVsTE: { home: 'C', away: 'A' },
+      pressureRate: { home: 24, away: 28 },
+      coverage: { home: 'Man Heavy', away: 'Zone Mix' },
+      weather: { icon: '☀️', description: 'Clear', impact: 'None' },
+      keyMatchups: [
+        'BUF WRs vs KC secondary (advantage BUF)',
+        'KC TE vs BUF LB coverage (advantage KC)'
+      ]
+    },
+    {
+      id: 2,
+      homeTeam: 'SF',
+      awayTeam: 'DAL',
+      vegasTotal: 50.0,
+      pace: 'Medium',
+      homePassRate: 58,
+      awayPassRate: 62,
+      defVsQB: { home: 'B', away: 'C' },
+      defVsRB: { home: 'C', away: 'B' },
+      defVsWR: { home: 'A', away: 'B' },
+      defVsTE: { home: 'B', away: 'C' },
+      pressureRate: { home: 32, away: 26 },
+      coverage: { home: 'Zone Heavy', away: 'Man Mix' },
+      weather: { icon: '☀️', description: 'Clear', impact: 'None' },
+      keyMatchups: [
+        'DAL WR1 vs SF CB2 (slight advantage DAL)',
+        'SF RB vs DAL run defense (advantage SF)'
+      ]
+    },
+    {
+      id: 3,
+      homeTeam: 'CIN',
+      awayTeam: 'BAL',
+      vegasTotal: 48.5,
+      pace: 'Medium-High',
+      homePassRate: 65,
+      awayPassRate: 54,
+      defVsQB: { home: 'B', away: 'C' },
+      defVsRB: { home: 'C', away: 'B' },
+      defVsWR: { home: 'B', away: 'C' },
+      defVsTE: { home: 'A', away: 'B' },
+      pressureRate: { home: 28, away: 30 },
+      coverage: { home: 'Zone Mix', away: 'Man Heavy' },
+      weather: { icon: '☀️', description: 'Clear', impact: 'None' },
+      keyMatchups: [
+        'BAL QB rushing vs CIN run D (advantage BAL)',
+        'CIN WRs vs BAL secondary (neutral)'
+      ]
+    }
+  ]
+}
+
+// Generate team stats (offensive/defensive rankings)
+function generateTeamStats() {
+  return [
+    {
+      team: 'KC',
+      offense: {
+        epa: 0.18,
+        rank: 2,
+        pointsPG: 28.4,
+        yardsPG: 382.6,
+        redZoneEff: 64.2,
+        runPassRatio: '38/62',
+        explosivePlays: 52
+      },
+      defense: {
+        epa: -0.04,
+        rank: 14,
+        pointsAllowedPG: 22.8,
+        yardsAllowedPG: 348.2,
+        redZoneEff: 58.4,
+        pressureRate: 24,
+        explosivePlaysAllowed: 38
+      }
+    },
+    {
+      team: 'SF',
+      offense: {
+        epa: 0.22,
+        rank: 1,
+        pointsPG: 30.2,
+        yardsPG: 398.4,
+        redZoneEff: 68.4,
+        runPassRatio: '42/58',
+        explosivePlays: 58
+      },
+      defense: {
+        epa: -0.12,
+        rank: 3,
+        pointsAllowedPG: 18.6,
+        yardsAllowedPG: 312.4,
+        redZoneEff: 48.2,
+        pressureRate: 32,
+        explosivePlaysAllowed: 28
+      }
+    },
+    {
+      team: 'BUF',
+      offense: {
+        epa: 0.16,
+        rank: 3,
+        pointsPG: 27.8,
+        yardsPG: 376.2,
+        redZoneEff: 62.8,
+        runPassRatio: '36/64',
+        explosivePlays: 48
+      },
+      defense: {
+        epa: -0.08,
+        rank: 8,
+        pointsAllowedPG: 20.4,
+        yardsAllowedPG: 328.6,
+        redZoneEff: 54.2,
+        pressureRate: 28,
+        explosivePlaysAllowed: 32
+      }
+    },
+    {
+      team: 'DAL',
+      offense: {
+        epa: 0.12,
+        rank: 6,
+        pointsPG: 26.2,
+        yardsPG: 364.8,
+        redZoneEff: 58.6,
+        runPassRatio: '38/62',
+        explosivePlays: 44
+      },
+      defense: {
+        epa: -0.06,
+        rank: 12,
+        pointsAllowedPG: 21.8,
+        yardsAllowedPG: 336.4,
+        redZoneEff: 56.8,
+        pressureRate: 26,
+        explosivePlaysAllowed: 36
+      }
+    }
+  ]
+}
+
+// Generate weather & injury hub (consolidated)
+function generateWeatherInjuryHub() {
+  return [
+    {
+      game: 'BUF @ KC',
+      weather: { icon: '☀️', temp: 48, wind: 8, condition: 'Clear', impact: 'None' },
+      injuries: [
+        { player: 'Travis Kelce', team: 'KC', position: 'TE', status: 'Questionable', impact: 'Medium', note: 'Limited practice, expected to play' }
+      ]
+    },
+    {
+      game: 'DAL @ SF',
+      weather: { icon: '☀️', temp: 64, wind: 6, condition: 'Clear', impact: 'None' },
+      injuries: [
+        { player: 'Deebo Samuel', team: 'SF', position: 'WR', status: 'Probable', impact: 'Low', note: 'Full participant Friday' },
+        { player: 'Christian McCaffrey', team: 'SF', position: 'RB', status: 'Questionable', impact: 'High', note: 'Ankle concern, monitor pregame' }
+      ]
+    },
+    {
+      game: 'BAL @ CIN',
+      weather: { icon: '☀️', temp: 52, wind: 10, condition: 'Clear', impact: 'None' },
+      injuries: []
+    },
+    {
+      game: 'PIT @ CLE',
+      weather: { icon: '🌧️', temp: 42, wind: 18, condition: 'Rain', impact: 'High - Downgrade passing' },
+      injuries: [
+        { player: 'Nick Chubb', team: 'CLE', position: 'RB', status: 'Out', impact: 'High', note: 'Knee injury, ruled out' }
+      ]
+    }
+  ]
+}
 
 // Generate slate metadata
 function generateSlateInfo() {
@@ -843,20 +1188,31 @@ export async function POST(request) {
         runId,
         action
       },
+      // V1.1 NEW - Premium NFL Research Data
+      playerCarousel: generatePlayerCarousel(),
+      seasonStats: generateSeasonStats(),
+      gameLogs: generateGameLogs(),
+      matchupIntelligence: generateMatchupIntelligence(),
+      teamStats: generateTeamStats(),
+      weatherInjuryHub: generateWeatherInjuryHub(),
+
+      // Core Data (kept from v1.0)
       slateInfo: generateSlateInfo(),
-      featuredGames: generateFeaturedGames(),
       slateHeadlines: generateSlateHeadlines(),
-      corePlays: generateCorePlays(),
       lastWeekPerformance: generateLastWeekPerformance(),
+      lineupiqSummary: generateLineupIQSummary(),
+      playerPool: generatePlayerPool(),
+
+      // Legacy data (for backwards compatibility, will be removed in frontend)
+      featuredGames: generateFeaturedGames(),
       recentForm: generateRecentForm(),
       gameLevelStats: generateGameLevelStats(),
       valueWatchlist: generateValueWatchlist(),
       leverageWatchlist: generateLeverageWatchlist(),
       chalkMap: generateChalkMap(),
       stackPreviews: generateStackPreviews(),
-      lineupiqSummary: generateLineupIQSummary(),
-      contestPaths: generateContestPaths(),
-      playerPool: generatePlayerPool()
+      corePlays: generateCorePlays(),
+      contestPaths: generateContestPaths()
     }
 
     return NextResponse.json(response)
