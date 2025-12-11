@@ -53,12 +53,78 @@ function getNFLPlayerPool() {
   ]
 }
 
-// Calculate value for player pool
+// Calculate value and add tags for player pool
 function enrichPlayerPool(pool) {
-  return pool.map(p => ({
-    ...p,
-    value: ((p.projection / p.salary) * 1000).toFixed(2)
+  return pool.map(p => {
+    // Calculate tag based on ownership
+    let tag = 'Pivot'
+    if (p.ownership >= 25) {
+      tag = 'Chalk'
+    } else if (p.ownership < 10) {
+      tag = 'Leverage'
+    }
+
+    return {
+      ...p,
+      value: ((p.projection / p.salary) * 1000).toFixed(2),
+      tag,
+      exposure: 0 // Will be calculated after lineups are generated
+    }
+  })
+}
+
+// Calculate player exposures from lineups
+function calculateExposures(playerPool, lineups) {
+  const exposureCounts = {}
+
+  // Count how many lineups each player appears in
+  lineups.forEach(lineup => {
+    lineup.players.forEach(player => {
+      exposureCounts[player.id] = (exposureCounts[player.id] || 0) + 1
+    })
+  })
+
+  // Calculate exposure percentage
+  return playerPool.map(player => ({
+    ...player,
+    exposure: lineups.length > 0
+      ? ((exposureCounts[player.id] || 0) / lineups.length * 100).toFixed(1)
+      : 0
   }))
+}
+
+// Calculate lineup summary statistics
+function calculateSummary(lineups, playerPool) {
+  if (lineups.length === 0) return null
+
+  // Average metrics
+  const avgProjection = (lineups.reduce((sum, lu) => sum + lu.projection, 0) / lineups.length).toFixed(1)
+  const avgOwnership = (lineups.reduce((sum, lu) => sum + lu.ownership, 0) / lineups.length).toFixed(0)
+  const avgLeverage = (lineups.reduce((sum, lu) => sum + lu.leverageScore, 0) / lineups.length).toFixed(1)
+
+  // Most-used stack
+  const stackCounts = {}
+  lineups.forEach(lineup => {
+    if (lineup.stackSummary) {
+      stackCounts[lineup.stackSummary] = (stackCounts[lineup.stackSummary] || 0) + 1
+    }
+  })
+  const mostUsedStack = Object.entries(stackCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || 'No stacks'
+
+  // Top 3 exposed players
+  const exposures = playerPool
+    .filter(p => parseFloat(p.exposure) > 0)
+    .sort((a, b) => parseFloat(b.exposure) - parseFloat(a.exposure))
+    .slice(0, 3)
+    .map(p => ({ name: p.name, exposure: p.exposure }))
+
+  return {
+    avgProjection,
+    avgOwnership,
+    avgLeverage,
+    mostUsedStack,
+    topExposures: exposures
+  }
 }
 
 // Generate lineups based on settings
@@ -267,8 +333,12 @@ export async function POST(request) {
       secondaryStack
     })
 
-    // Get player pool for reference
-    const playerPool = enrichPlayerPool(sport === 'NFL' ? getNFLPlayerPool() : getNFLPlayerPool())
+    // Get player pool and calculate exposures
+    let playerPool = enrichPlayerPool(sport === 'NFL' ? getNFLPlayerPool() : getNFLPlayerPool())
+    playerPool = calculateExposures(playerPool, lineups)
+
+    // Calculate summary statistics
+    const summary = calculateSummary(lineups, playerPool)
 
     return NextResponse.json({
       meta: {
@@ -282,6 +352,7 @@ export async function POST(request) {
       },
       lineups,
       playerPool,
+      summary,
       settings: {
         leveragePreference,
         chalkTolerance,

@@ -5,8 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 
 // ============================================================
-// OPTIMIZER ENGINE — V1 PRO MODE
-// World-class DFS lineup builder
+// OPTIMIZER ENGINE — V1.1 PRO MODE
+// World-class DFS lineup builder with visual intelligence
 // ============================================================
 
 export default function OptimizerPage() {
@@ -23,14 +23,17 @@ export default function OptimizerPage() {
   const [diversification, setDiversification] = useState(50) // 0-100
   const [globalExposureCap, setGlobalExposureCap] = useState(100)
 
-  // ========== STACK SETTINGS ==========
-  const [showStackBuilder, setShowStackBuilder] = useState(false)
+  // ========== GAME PLAN (STACKS) SETTINGS ==========
+  const [showGamePlan, setShowGamePlan] = useState(true) // Default expanded for Pro Mode
   const [primaryStackTeam, setPrimaryStackTeam] = useState('KC')
-  const [primaryStackSize, setPrimaryStackSize] = useState(3)
+  const [primaryStackType, setPrimaryStackType] = useState('QB + WR + TE')
+  const [primaryStackUsage, setPrimaryStackUsage] = useState(60) // % of lineups
   const [useBringback, setUseBringback] = useState(true)
   const [bringbackCount, setBringbackCount] = useState(1)
+  const [enableSecondaryStack, setEnableSecondaryStack] = useState(false)
   const [secondaryStackTeam, setSecondaryStackTeam] = useState('BUF')
-  const [secondaryStackSize, setSecondaryStackSize] = useState(2)
+  const [secondaryStackType, setSecondaryStackType] = useState('RB + WR')
+  const [secondaryStackUsage, setSecondaryStackUsage] = useState(30)
   const [stackDiversity, setStackDiversity] = useState(50)
 
   // ========== PLAYER POOL STATE ==========
@@ -45,8 +48,10 @@ export default function OptimizerPage() {
   // ========== OPTIMIZER STATE ==========
   const [optimizerStatus, setOptimizerStatus] = useState('idle') // idle | building | complete | error
   const [lineups, setLineups] = useState(null)
+  const [summary, setSummary] = useState(null)
   const [error, setError] = useState(null)
   const [activeLineupsTab, setActiveLineupsTab] = useState('all')
+  const [showExposureSummary, setShowExposureSummary] = useState(false)
 
   // Available slates per sport
   const slateOptions = {
@@ -62,6 +67,16 @@ export default function OptimizerPage() {
     '3-Max': { leverage: 60, chalk: 40, diversification: 60 },
     'Large-Field GPP': { leverage: 70, chalk: 30, diversification: 70 },
     'MME': { leverage: 75, chalk: 25, diversification: 80 }
+  }
+
+  // Stack type mapping for size
+  const stackTypeToSize = {
+    'QB + WR + WR': 3,
+    'QB + WR + TE': 3,
+    'QB + WR + RB': 3,
+    'RB + WR': 2,
+    'RB + TE': 2,
+    'WR + WR': 2
   }
 
   // Apply contest preset
@@ -98,14 +113,6 @@ export default function OptimizerPage() {
     setLocks(prev => prev.filter(id => id !== playerId))
   }
 
-  // Set exposure for player
-  const setPlayerExposure = (playerId, min, max) => {
-    setExposures(prev => ({
-      ...prev,
-      [playerId]: { min, max }
-    }))
-  }
-
   // Build lineups
   const handleBuildLineups = async () => {
     setOptimizerStatus('building')
@@ -126,15 +133,15 @@ export default function OptimizerPage() {
           diversification: diversification / 100,
           locks,
           fades,
-          primaryStack: showStackBuilder ? {
+          primaryStack: showGamePlan ? {
             team: primaryStackTeam,
-            size: primaryStackSize,
+            size: stackTypeToSize[primaryStackType] || 3,
             bringback: useBringback,
             bringbackCount
           } : null,
-          secondaryStack: showStackBuilder && useBringback ? {
+          secondaryStack: showGamePlan && useBringback ? {
             team: secondaryStackTeam,
-            size: secondaryStackSize
+            size: stackTypeToSize[secondaryStackType] || 2
           } : null,
           minExposures: exposures,
           maxExposures: exposures
@@ -146,6 +153,7 @@ export default function OptimizerPage() {
       const data = await response.json()
       setLineups(data.lineups)
       setPlayerPool(data.playerPool)
+      setSummary(data.summary)
       setOptimizerStatus('complete')
     } catch (err) {
       setError('Failed to build lineups. Please try again.')
@@ -160,8 +168,8 @@ export default function OptimizerPage() {
     return playerPool.filter(p => {
       if (positionFilter !== 'ALL' && p.position !== positionFilter) return false
       if (teamFilter !== 'ALL' && p.team !== teamFilter) return false
-      if (chalkFilter === 'Chalk' && p.ownership < 20) return false
-      if (chalkFilter === 'Pivot' && (p.ownership < 10 || p.ownership >= 20)) return false
+      if (chalkFilter === 'Chalk' && p.ownership < 25) return false
+      if (chalkFilter === 'Pivot' && (p.ownership < 10 || p.ownership >= 25)) return false
       if (chalkFilter === 'Leverage' && p.ownership >= 10) return false
       return true
     })
@@ -172,6 +180,14 @@ export default function OptimizerPage() {
     if (!playerPool) return []
     return [...new Set(playerPool.map(p => p.team))].sort()
   }, [playerPool])
+
+  // Get tag color
+  const getTagColor = (tag) => {
+    if (tag === 'Chalk') return 'bg-red-100 text-red-700 border-red-300'
+    if (tag === 'Pivot') return 'bg-blue-100 text-blue-700 border-blue-300'
+    if (tag === 'Leverage') return 'bg-green-100 text-green-700 border-green-300'
+    return 'bg-slate-100 text-slate-600 border-slate-300'
+  }
 
   // Export to CSV
   const exportToCSV = () => {
@@ -184,7 +200,6 @@ export default function OptimizerPage() {
         if (positions[p.position]) positions[p.position].push(p.name)
       })
 
-      // DraftKings format: 1 QB, 2 RB, 3 WR, 1 TE, 1 FLEX, 1 DST
       const qb = positions.QB[0] || ''
       const rb1 = positions.RB[0] || ''
       const rb2 = positions.RB[1] || ''
@@ -206,62 +221,69 @@ export default function OptimizerPage() {
     a.click()
   }
 
-  // LineupIQ Assistant logic
+  // LineupIQ Assistant Build Review insights
   const getAssistantInsights = () => {
-    if (optimizerStatus !== 'complete' || !lineups) return null
+    if (optimizerStatus !== 'complete' || !lineups || !playerPool || !summary) return null
 
     const insights = []
 
-    // Check chalk exposure
-    if (playerPool) {
-      const chalkPlayers = playerPool.filter(p => p.ownership > 30)
-      chalkPlayers.forEach(player => {
-        const exposure = lineups.filter(lu => lu.players.find(p => p.id === player.id)).length / lineups.length * 100
-        if (exposure > 60) {
-          insights.push({
-            type: 'warning',
-            message: `You're ${exposure.toFixed(0)}% exposed to ${player.name} (${player.ownership}% owned). Consider max 40% in GPPs.`
-          })
-        }
+    // Check for high exposure risk (>70% on any player)
+    const highExposurePlayers = playerPool.filter(p => parseFloat(p.exposure) > 70)
+    if (highExposurePlayers.length > 0) {
+      highExposurePlayers.forEach(player => {
+        insights.push({
+          type: 'warning',
+          label: 'Risk Check',
+          message: `You have ${player.exposure}% exposure to ${player.name}. This is high risk for large-field GPPs. Consider lowering max exposure to 40-50%.`
+        })
       })
     }
 
-    // Check leverage
-    const avgLeverage = lineups.reduce((sum, lu) => sum + lu.leverageScore, 0) / lineups.length
-    if (contestType.includes('GPP') && avgLeverage < 10) {
+    // Check leverage vs contest type mismatch
+    const avgLev = parseFloat(summary.avgLeverage)
+    if (contestType.includes('GPP') && avgLev < 5) {
       insights.push({
         type: 'tip',
-        message: `Low average leverage (${avgLeverage.toFixed(1)}). Consider adding more contrarian plays for GPP upside.`
+        label: 'Leverage Edge',
+        message: `Average leverage is ${summary.avgLeverage} for a GPP build. Consider raising leverage preference or targeting more contrarian plays.`
+      })
+    }
+
+    // Check chalk tolerance vs actual ownership
+    const avgOwn = parseFloat(summary.avgOwnership)
+    if (chalkTolerance < 40 && avgOwn > 80) {
+      insights.push({
+        type: 'tip',
+        label: 'Suggestion',
+        message: `Your chalk tolerance is low, but average ownership is ${summary.avgOwnership}%. Consider raising diversification or fading popular players.`
       })
     }
 
     // Check stack usage
-    const stackedLineups = lineups.filter(lu => lu.stackSummary).length
-    if (stackedLineups < lineups.length * 0.7) {
+    if (summary.mostUsedStack === 'No stacks' && numLineups > 1) {
       insights.push({
         type: 'tip',
-        message: `Only ${((stackedLineups / lineups.length) * 100).toFixed(0)}% of lineups use stacks. Consider enabling Stack Builder for better correlation.`
+        label: 'Suggestion',
+        message: `No stacks detected in your lineups. Enable Game Plan to add correlated stacks for tournament upside.`
       })
     }
 
-    // Check faded value
-    if (fades.length > 0 && playerPool) {
-      const fadedPlayers = playerPool.filter(p => fades.includes(p.id))
-      fadedPlayers.forEach(player => {
-        if (parseFloat(player.value) > 3.0) {
-          insights.push({
-            type: 'question',
-            message: `You faded ${player.name} (${player.value} value). Intentional? Strong value play.`
-          })
-        }
+    // Key lean summary
+    if (summary.topExposures && summary.topExposures.length > 0) {
+      const topNames = summary.topExposures.map(e => e.name).join(', ')
+      insights.push({
+        type: 'strategy',
+        label: 'Key Lean',
+        message: `Your lineups lean heavily on ${topNames}. Make sure you're comfortable with this core exposure.`
       })
     }
 
-    // Contest-specific advice
+    // 3-Max specific advice
     if (contestType === '3-Max') {
       insights.push({
         type: 'strategy',
-        message: '3-Max Strategy: Balance chalk with moderate leverage. Aim for 2 unique builds + 1 safer lineup.'
+        label: '3-Max Strategy',
+        message: `For 3-Max, aim for 2 unique builds with medium leverage and 1 safer chalk lineup. Diversify your stacks across ${numLineups} lineups.`
       })
     }
 
@@ -269,6 +291,19 @@ export default function OptimizerPage() {
   }
 
   const assistantInsights = getAssistantInsights()
+
+  // Generate primary stack summary sentence
+  const getPrimaryStackSummary = () => {
+    if (!showGamePlan) return null
+    const bringbackText = useBringback ? ` with ${bringbackCount} bringback` : ''
+    return `Use ${primaryStackTeam} ${primaryStackType}${bringbackText} in ${primaryStackUsage}% of lineups`
+  }
+
+  // Generate secondary stack summary sentence
+  const getSecondaryStackSummary = () => {
+    if (!showGamePlan || !enableSecondaryStack) return null
+    return `Use ${secondaryStackTeam} ${secondaryStackType} mini-stack in ${secondaryStackUsage}% of lineups`
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
@@ -280,7 +315,7 @@ export default function OptimizerPage() {
               <Link href="/" className="text-3xl font-black text-white hover:text-blue-300 transition-colors">
                 FantasyHub<span className="text-blue-400">AI</span>
               </Link>
-              <p className="text-blue-200 text-sm mt-1 font-medium">LINEUP OPTIMIZER — PRO MODE</p>
+              <p className="text-blue-200 text-sm mt-1 font-medium">LINEUP OPTIMIZER — V1.1 PRO MODE</p>
             </div>
             <div className="flex items-center gap-4">
               <div className="text-right">
@@ -452,7 +487,7 @@ export default function OptimizerPage() {
               </select>
             </motion.div>
 
-            {/* Stack Builder */}
+            {/* GAME PLAN (STACKS) - V1.1 */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -460,20 +495,20 @@ export default function OptimizerPage() {
               className="bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden"
             >
               <button
-                onClick={() => setShowStackBuilder(!showStackBuilder)}
+                onClick={() => setShowGamePlan(!showGamePlan)}
                 className="w-full p-6 text-left flex items-center justify-between hover:bg-slate-50 transition-colors"
                 style={{
-                  background: showStackBuilder ? 'linear-gradient(135deg, #F0F9FF, #E0F2FE)' : 'linear-gradient(135deg, #FFFFFF, #F8FAFC)'
+                  background: showGamePlan ? 'linear-gradient(135deg, #F0F9FF, #E0F2FE)' : 'linear-gradient(135deg, #FFFFFF, #F8FAFC)'
                 }}
               >
                 <div>
-                  <h3 className="text-xl font-black text-slate-900">Stack Builder</h3>
+                  <h3 className="text-xl font-black text-slate-900">Game Plan (Stacks)</h3>
                   <p className="text-xs text-slate-600 mt-1">
-                    {showStackBuilder ? 'Configure stacks below' : 'Click to enable stack logic'}
+                    Tell LineupIQ how to structure game stacks in your lineups
                   </p>
                 </div>
                 <motion.div
-                  animate={{ rotate: showStackBuilder ? 180 : 0 }}
+                  animate={{ rotate: showGamePlan ? 180 : 0 }}
                   className="text-2xl text-slate-600"
                 >
                   ▼
@@ -481,46 +516,49 @@ export default function OptimizerPage() {
               </button>
 
               <AnimatePresence>
-                {showStackBuilder && (
+                {showGamePlan && (
                   <motion.div
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: 'auto', opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
                     className="border-t border-slate-200"
                   >
-                    <div className="p-6 space-y-4">
-                      {/* Primary Stack */}
+                    <div className="p-6 space-y-5">
+                      {/* Primary Stack Rule */}
                       <div className="bg-blue-50 rounded-lg p-4 border-2 border-blue-200">
                         <h4 className="font-bold text-sm text-blue-900 mb-3">Primary Stack</h4>
                         <div className="space-y-3">
-                          <div>
-                            <label className="block text-xs font-bold text-slate-700 mb-1">Team</label>
-                            <select
-                              value={primaryStackTeam}
-                              onChange={(e) => setPrimaryStackTeam(e.target.value)}
-                              className="w-full px-3 py-2 bg-white border border-blue-300 rounded-lg font-semibold text-sm text-slate-800 focus:outline-none focus:border-blue-500"
-                            >
-                              <option value="KC">Kansas City (KC)</option>
-                              <option value="BUF">Buffalo (BUF)</option>
-                              <option value="PHI">Philadelphia (PHI)</option>
-                              <option value="SF">San Francisco (SF)</option>
-                              <option value="DAL">Dallas (DAL)</option>
-                              <option value="MIA">Miami (MIA)</option>
-                            </select>
+                          <div className="grid grid-cols-2 gap-2">
+                            <div>
+                              <label className="block text-xs font-bold text-slate-700 mb-1">Team</label>
+                              <select
+                                value={primaryStackTeam}
+                                onChange={(e) => setPrimaryStackTeam(e.target.value)}
+                                className="w-full px-2 py-1.5 bg-white border border-blue-300 rounded font-semibold text-xs text-slate-800 focus:outline-none focus:border-blue-500"
+                              >
+                                <option value="KC">KC</option>
+                                <option value="BUF">BUF</option>
+                                <option value="PHI">PHI</option>
+                                <option value="SF">SF</option>
+                                <option value="DAL">DAL</option>
+                                <option value="MIA">MIA</option>
+                              </select>
+                            </div>
+                            <div>
+                              <label className="block text-xs font-bold text-slate-700 mb-1">Type</label>
+                              <select
+                                value={primaryStackType}
+                                onChange={(e) => setPrimaryStackType(e.target.value)}
+                                className="w-full px-2 py-1.5 bg-white border border-blue-300 rounded font-semibold text-xs text-slate-800 focus:outline-none focus:border-blue-500"
+                              >
+                                <option value="QB + WR + WR">QB + WR + WR</option>
+                                <option value="QB + WR + TE">QB + WR + TE</option>
+                                <option value="QB + WR + RB">QB + WR + RB</option>
+                              </select>
+                            </div>
                           </div>
-                          <div>
-                            <label className="block text-xs font-bold text-slate-700 mb-1">Stack Size</label>
-                            <select
-                              value={primaryStackSize}
-                              onChange={(e) => setPrimaryStackSize(parseInt(e.target.value))}
-                              className="w-full px-3 py-2 bg-white border border-blue-300 rounded-lg font-semibold text-sm text-slate-800 focus:outline-none focus:border-blue-500"
-                            >
-                              <option value="2">2-Player (QB + WR)</option>
-                              <option value="3">3-Player (QB + 2 WR)</option>
-                              <option value="4">4-Player (QB + 2 WR + TE)</option>
-                            </select>
-                          </div>
-                          <div className="flex items-center gap-2">
+
+                          <div className="flex items-center gap-3">
                             <input
                               type="checkbox"
                               id="bringback"
@@ -528,21 +566,53 @@ export default function OptimizerPage() {
                               onChange={(e) => setUseBringback(e.target.checked)}
                               className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
                             />
-                            <label htmlFor="bringback" className="text-sm font-bold text-slate-700">
+                            <label htmlFor="bringback" className="text-xs font-bold text-slate-700">
                               Add Bringback
                             </label>
+                            {useBringback && (
+                              <select
+                                value={bringbackCount}
+                                onChange={(e) => setBringbackCount(parseInt(e.target.value))}
+                                className="px-2 py-1 bg-white border border-blue-300 rounded font-semibold text-xs text-slate-800 focus:outline-none focus:border-blue-500"
+                              >
+                                <option value="1">1 player</option>
+                                <option value="2">2 players</option>
+                              </select>
+                            )}
+                          </div>
+
+                          <div>
+                            <label className="block text-xs font-bold text-slate-700 mb-1">
+                              Use in {primaryStackUsage}% of lineups
+                            </label>
+                            <input
+                              type="range"
+                              min="0"
+                              max="100"
+                              step="10"
+                              value={primaryStackUsage}
+                              onChange={(e) => setPrimaryStackUsage(parseInt(e.target.value))}
+                              className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                            />
+                          </div>
+
+                          {/* Summary Sentence */}
+                          <div className="mt-3 pt-3 border-t border-blue-300">
+                            <p className="text-xs text-blue-800 leading-relaxed">
+                              <span className="font-bold">Summary:</span> {getPrimaryStackSummary()}
+                            </p>
                           </div>
                         </div>
                       </div>
 
-                      {/* Secondary Stack (Bringback) */}
+                      {/* Secondary Stack (Bringback Team) */}
                       {useBringback && (
                         <motion.div
                           initial={{ opacity: 0, y: -10 }}
                           animate={{ opacity: 1, y: 0 }}
                           className="bg-green-50 rounded-lg p-4 border-2 border-green-200"
                         >
-                          <h4 className="font-bold text-sm text-green-900 mb-3">Secondary Stack (Bringback)</h4>
+                          <h4 className="font-bold text-sm text-green-900 mb-3">Bringback Team</h4>
                           <div className="space-y-3">
                             <div>
                               <label className="block text-xs font-bold text-slate-700 mb-1">Team</label>
@@ -565,7 +635,7 @@ export default function OptimizerPage() {
                       {/* Stack Diversity */}
                       <div>
                         <label className="block text-sm font-bold text-slate-700 mb-2">
-                          Stack Diversity: {stackDiversity}%
+                          Stack Diversity
                         </label>
                         <input
                           type="range"
@@ -573,12 +643,15 @@ export default function OptimizerPage() {
                           max="100"
                           value={stackDiversity}
                           onChange={(e) => setStackDiversity(parseInt(e.target.value))}
-                          className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                          className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-purple-600"
                         />
                         <div className="flex justify-between text-xs text-slate-500 mt-1">
-                          <span>Same stack</span>
-                          <span>Rotate stacks</span>
+                          <span>Concentrated</span>
+                          <span>Spread Out</span>
                         </div>
+                        <p className="text-xs text-slate-500 mt-2 leading-relaxed">
+                          Concentrated = repeat same game more often. Spread = use more teams/games.
+                        </p>
                       </div>
                     </div>
                   </motion.div>
@@ -737,8 +810,8 @@ export default function OptimizerPage() {
                       className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg font-semibold text-xs text-slate-800 focus:outline-none focus:border-blue-500"
                     >
                       <option value="ALL">All Players</option>
-                      <option value="Chalk">Chalk (&gt;20%)</option>
-                      <option value="Pivot">Pivot (10-20%)</option>
+                      <option value="Chalk">Chalk (&gt;25%)</option>
+                      <option value="Pivot">Pivot (10-25%)</option>
                       <option value="Leverage">Leverage (&lt;10%)</option>
                     </select>
                   </div>
@@ -762,12 +835,12 @@ export default function OptimizerPage() {
                     <thead className="bg-slate-100 sticky top-0 z-10">
                       <tr>
                         <th className="px-3 py-2 text-left font-bold text-slate-700 uppercase">Player</th>
-                        <th className="px-2 py-2 text-center font-bold text-slate-700 uppercase">Pos</th>
                         <th className="px-2 py-2 text-center font-bold text-slate-700 uppercase">Proj</th>
-                        <th className="px-2 py-2 text-center font-bold text-slate-700 uppercase">Salary</th>
-                        <th className="px-2 py-2 text-center font-bold text-slate-700 uppercase">Val</th>
+                        <th className="px-2 py-2 text-center font-bold text-slate-700 uppercase">Sal</th>
                         <th className="px-2 py-2 text-center font-bold text-slate-700 uppercase">Own%</th>
                         <th className="px-2 py-2 text-center font-bold text-slate-700 uppercase">Lev</th>
+                        <th className="px-2 py-2 text-center font-bold text-slate-700 uppercase">Exp%</th>
+                        <th className="px-2 py-2 text-center font-bold text-slate-700 uppercase">Tag</th>
                         <th className="px-2 py-2 text-center font-bold text-slate-700 uppercase">Lock</th>
                         <th className="px-2 py-2 text-center font-bold text-slate-700 uppercase">Fade</th>
                       </tr>
@@ -776,8 +849,7 @@ export default function OptimizerPage() {
                       {filteredPlayers.map((player, index) => {
                         const isLocked = locks.includes(player.id)
                         const isFaded = fades.includes(player.id)
-                        const isChalk = player.ownership >= 20
-                        const isLeverage = player.leverage > 10
+                        const exposure = parseFloat(player.exposure) || 0
 
                         return (
                           <motion.tr
@@ -785,9 +857,7 @@ export default function OptimizerPage() {
                             initial={{ opacity: 0, x: -10 }}
                             animate={{ opacity: isFaded ? 0.4 : 1, x: 0 }}
                             transition={{ delay: index * 0.01 }}
-                            className={`hover:bg-blue-50 transition-colors ${
-                              isChalk ? 'bg-red-50/30' : isLeverage ? 'bg-green-50/30' : ''
-                            }`}
+                            className="hover:bg-blue-50 transition-colors"
                           >
                             <td className="px-3 py-2">
                               <div className="flex items-center gap-2">
@@ -797,36 +867,50 @@ export default function OptimizerPage() {
                                 <div>
                                   <div className="font-bold text-slate-900">{player.name}</div>
                                   <div className="text-[10px] text-slate-500 font-semibold">{player.team}</div>
+                                  {/* Exposure bar (post-build) */}
+                                  {exposure > 0 && (
+                                    <div className="w-16 h-1 bg-slate-200 rounded-full overflow-hidden mt-0.5">
+                                      <div
+                                        className="h-full bg-blue-600 rounded-full"
+                                        style={{ width: `${Math.min(exposure, 100)}%` }}
+                                      />
+                                    </div>
+                                  )}
                                 </div>
                               </div>
                             </td>
-                            <td className="px-2 py-2 text-center font-bold text-slate-600">{player.position}</td>
                             <td className="px-2 py-2 text-center font-bold text-slate-800">{player.projection.toFixed(1)}</td>
                             <td className="px-2 py-2 text-center font-semibold text-slate-600">${(player.salary / 1000).toFixed(1)}k</td>
-                            <td className="px-2 py-2 text-center font-bold text-blue-600">{player.value}</td>
                             <td className="px-2 py-2 text-center">
                               <span className={`font-bold ${
-                                player.ownership >= 30 ? 'text-red-600' :
-                                player.ownership >= 20 ? 'text-orange-600' :
-                                player.ownership >= 10 ? 'text-yellow-600' :
-                                'text-green-600'
+                                player.ownership >= 25 ? 'text-red-600' :
+                                player.ownership < 10 ? 'text-green-600' :
+                                'text-slate-700'
                               }`}>
                                 {player.ownership.toFixed(0)}%
                               </span>
                             </td>
                             <td className="px-2 py-2 text-center">
                               <span className={`font-bold ${
-                                player.leverage > 10 ? 'text-green-600' :
-                                player.leverage > 0 ? 'text-blue-600' :
-                                'text-red-600'
+                                player.leverage > 0 ? 'text-green-600' : 'text-red-600'
                               }`}>
                                 {player.leverage > 0 ? '+' : ''}{player.leverage.toFixed(0)}
                               </span>
                             </td>
                             <td className="px-2 py-2 text-center">
+                              <span className="font-bold text-blue-700">
+                                {exposure > 0 ? `${exposure}%` : '-'}
+                              </span>
+                            </td>
+                            <td className="px-2 py-2 text-center">
+                              <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold border ${getTagColor(player.tag)}`}>
+                                {player.tag}
+                              </span>
+                            </td>
+                            <td className="px-2 py-2 text-center">
                               <button
                                 onClick={() => toggleLock(player.id)}
-                                className={`w-8 h-8 rounded-lg font-bold text-xs transition-all ${
+                                className={`w-7 h-7 rounded-lg font-bold text-xs transition-all ${
                                   isLocked
                                     ? 'bg-blue-600 text-white shadow-lg'
                                     : 'bg-slate-200 text-slate-400 hover:bg-slate-300'
@@ -838,7 +922,7 @@ export default function OptimizerPage() {
                             <td className="px-2 py-2 text-center">
                               <button
                                 onClick={() => toggleFade(player.id)}
-                                className={`w-8 h-8 rounded-lg font-bold text-xs transition-all ${
+                                className={`w-7 h-7 rounded-lg font-bold text-xs transition-all ${
                                   isFaded
                                     ? 'bg-red-600 text-white shadow-lg'
                                     : 'bg-slate-200 text-slate-400 hover:bg-slate-300'
@@ -875,14 +959,16 @@ export default function OptimizerPage() {
                 </div>
                 <div>
                   <h3 className="font-black text-lg">LineupIQ Assistant</h3>
-                  <p className="text-purple-200 text-xs">Optimizer Coach</p>
+                  <p className="text-purple-200 text-xs">
+                    {optimizerStatus === 'complete' ? 'Build Review' : 'Optimizer Coach'}
+                  </p>
                 </div>
               </div>
 
               <div className="space-y-3">
                 {optimizerStatus === 'idle' && (
                   <p className="text-sm text-purple-100 leading-relaxed">
-                    Configure your strategy settings, enable stacks if desired, and click "Build Lineups" to generate optimal lineups with intelligent correlation.
+                    Choose a contest type, configure your Game Plan for stacks, and adjust key exposures in the player pool. Then click "Build Lineups" to generate optimal lineups.
                   </p>
                 )}
 
@@ -907,10 +993,10 @@ export default function OptimizerPage() {
                         className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20"
                       >
                         <div className="font-bold text-xs mb-1">
-                          {insight.type === 'warning' && '⚠️ Warning'}
-                          {insight.type === 'tip' && '💡 Tip'}
-                          {insight.type === 'question' && '❓ Question'}
-                          {insight.type === 'strategy' && '🎯 Strategy'}
+                          {insight.type === 'warning' && '⚠️ ' + insight.label}
+                          {insight.type === 'tip' && '💡 ' + insight.label}
+                          {insight.type === 'question' && '❓ ' + insight.label}
+                          {insight.type === 'strategy' && '🎯 ' + insight.label}
                         </div>
                         <p className="text-xs text-purple-100 leading-relaxed">
                           {insight.message}
@@ -924,7 +1010,7 @@ export default function OptimizerPage() {
                   <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
                     <div className="font-bold text-sm mb-1">✅ Looking Good!</div>
                     <p className="text-xs text-purple-100 leading-relaxed">
-                      Your lineups look solid. Consider reviewing exposure levels and stack diversity before exporting.
+                      Your lineups look solid. Review exposure levels and stack diversity before exporting.
                     </p>
                   </div>
                 )}
@@ -932,10 +1018,67 @@ export default function OptimizerPage() {
 
               <div className="mt-4 pt-4 border-t border-white/20">
                 <div className="text-xs text-purple-200">
-                  💡 Tip: Use Lock/Fade controls in Player Pool to force specific players
+                  💡 Tip: Use Lock/Fade in Player Pool and adjust Game Plan stacks for optimal builds
                 </div>
               </div>
             </motion.div>
+
+            {/* Lineup Quality Summary - V1.1 */}
+            <AnimatePresence>
+              {optimizerStatus === 'complete' && summary && (
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  className="bg-white rounded-xl shadow-lg border border-slate-200 p-5"
+                  style={{
+                    background: 'linear-gradient(135deg, #FFFFFF, #F1F5F9)'
+                  }}
+                >
+                  <h3 className="text-lg font-black text-slate-900 mb-3">Quality Summary</h3>
+
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-slate-600 font-semibold">Avg Proj:</span>
+                      <span className="font-black text-slate-900">{summary.avgProjection}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-600 font-semibold">Avg Own:</span>
+                      <span className="font-black text-orange-600">{summary.avgOwnership}%</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-600 font-semibold">Avg Lev:</span>
+                      <span className={`font-black ${parseFloat(summary.avgLeverage) > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                        {parseFloat(summary.avgLeverage) > 0 ? '+' : ''}{summary.avgLeverage}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="mt-3 pt-3 border-t border-slate-200">
+                    <div className="text-xs">
+                      <div className="text-slate-600 font-semibold mb-1">Most-used stack:</div>
+                      <div className="font-bold text-blue-700">{summary.mostUsedStack}</div>
+                    </div>
+                  </div>
+
+                  {summary.topExposures && summary.topExposures.length > 0 && (
+                    <div className="mt-3 pt-3 border-t border-slate-200">
+                      <div className="text-xs">
+                        <div className="text-slate-600 font-semibold mb-1">Top exposures:</div>
+                        <div className="space-y-1">
+                          {summary.topExposures.map((exp, idx) => (
+                            <div key={idx} className="flex justify-between">
+                              <span className="font-bold text-slate-900">{exp.name}</span>
+                              <span className="font-bold text-blue-600">{exp.exposure}%</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* Lineups Output */}
             <AnimatePresence>
@@ -955,12 +1098,54 @@ export default function OptimizerPage() {
                         onClick={exportToCSV}
                         className="px-3 py-1.5 bg-green-600 hover:bg-green-500 text-white font-bold text-xs rounded-lg transition-all shadow-lg"
                       >
-                        📥 Export CSV
+                        📥 CSV
                       </button>
                     </div>
 
+                    {/* Exposure Summary Toggle */}
+                    <button
+                      onClick={() => setShowExposureSummary(!showExposureSummary)}
+                      className="w-full px-3 py-2 bg-blue-100 hover:bg-blue-200 text-blue-900 font-bold text-xs rounded-lg transition-colors"
+                    >
+                      {showExposureSummary ? '▼ Hide' : '▶'} View Exposure Summary
+                    </button>
+
+                    {/* Exposure Summary Table */}
+                    <AnimatePresence>
+                      {showExposureSummary && playerPool && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          className="mt-3 overflow-hidden"
+                        >
+                          <div className="bg-white rounded-lg border border-blue-200 p-3 max-h-48 overflow-y-auto">
+                            <table className="w-full text-xs">
+                              <thead className="sticky top-0 bg-blue-50">
+                                <tr>
+                                  <th className="px-2 py-1 text-left font-bold text-blue-900">Player</th>
+                                  <th className="px-2 py-1 text-right font-bold text-blue-900">Exp%</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {playerPool
+                                  .filter(p => parseFloat(p.exposure) > 0)
+                                  .sort((a, b) => parseFloat(b.exposure) - parseFloat(a.exposure))
+                                  .map((player, idx) => (
+                                    <tr key={idx} className="border-t border-blue-100">
+                                      <td className="px-2 py-1 font-semibold text-slate-900">{player.name}</td>
+                                      <td className="px-2 py-1 text-right font-bold text-blue-700">{player.exposure}%</td>
+                                    </tr>
+                                  ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+
                     {/* Tabs */}
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 mt-3">
                       {['all', 'stacks', 'template'].map(tab => (
                         <button
                           key={tab}
@@ -980,7 +1165,7 @@ export default function OptimizerPage() {
                   </div>
 
                   {/* Lineups List */}
-                  <div className="overflow-y-auto" style={{ maxHeight: '600px' }}>
+                  <div className="overflow-y-auto" style={{ maxHeight: '500px' }}>
                     <div className="p-4 space-y-3">
                       {lineups.map((lineup, index) => (
                         <motion.div
