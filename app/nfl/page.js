@@ -1,347 +1,249 @@
 'use client'
+import { useState, useMemo } from 'react'
+import { useRouter } from 'next/navigation'
+import { motion, AnimatePresence } from 'framer-motion'
 
-import Navigation from '@/components/Navigation'
-import Link from 'next/link'
-import { motion } from 'framer-motion'
-import { useInView } from 'react-intersection-observer'
-import {
-  TrophyIcon,
-  ChartBarIcon,
-  CalendarIcon,
-  FireIcon,
-  BoltIcon,
-  UserGroupIcon
-} from '@heroicons/react/24/outline'
+export default function NFLSlatePage() {
+  const router = useRouter()
+  const [slateData, setSlateData] = useState(null)
+  const [loadStatus, setLoadStatus] = useState('idle')
+  const [error, setError] = useState(null)
+  const [expandedGames, setExpandedGames] = useState({})
+  const [searchQuery, setSearchQuery] = useState('')
+  const [showSearchResults, setShowSearchResults] = useState(false)
 
-export default function NFLPage() {
+  const handleLoadSlate = async () => {
+    setLoadStatus('loading')
+    setError(null)
+    try {
+      const response = await fetch('/api/nfl/slate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'load' })
+      })
+      if (!response.ok) throw new Error('API request failed')
+      const data = await response.json()
+      setSlateData(data)
+      setLoadStatus('loaded')
+    } catch (err) {
+      setError(err.message)
+      setLoadStatus('error')
+    }
+  }
+
+  const searchResults = useMemo(() => {
+    if (!slateData || !searchQuery.trim()) return []
+    const query = searchQuery.toLowerCase()
+    return slateData.playerPool.filter(p => 
+      p.name.toLowerCase().includes(query) || 
+      p.position.toLowerCase().includes(query) || 
+      p.team.toLowerCase().includes(query)
+    ).slice(0, 6)
+  }, [slateData, searchQuery])
+
   return (
-    <div className="min-h-screen bg-gray-900">
-      <Navigation />
-
-      {/* Hero Section */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900">
-        <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
-          <div className="text-[400px] font-bold text-white/5 absolute -top-32 -right-32 transform rotate-12">
-            🏈
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
+      <header className="bg-gradient-to-r from-slate-900 via-blue-900 to-slate-900 border-b-4 border-orange-500 sticky top-0 z-50 shadow-xl">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+              <h1 className="text-3xl md:text-4xl font-black text-white">NFL SLATE HUB</h1>
+              <p className="text-sm text-slate-300 mt-1">Research-rich strategy terminal</p>
+            </div>
+            {loadStatus === 'loaded' && (
+              <div className="flex flex-wrap gap-2">
+                <button onClick={() => router.push('/brainsheet')} className="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 text-white text-xs font-bold rounded-lg transition-all">📋 Brainsheet</button>
+                <button onClick={() => router.push('/optimizer')} className="px-4 py-2 bg-gradient-to-r from-green-500 to-green-600 text-white text-xs font-bold rounded-lg transition-all">🚀 Optimizer</button>
+              </div>
+            )}
           </div>
         </div>
+      </header>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center"
-          >
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-              className="text-8xl mb-6"
-            >
-              🏈
-            </motion.div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {loadStatus === 'idle' && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-20">
+            <div className="text-7xl mb-6">🏈</div>
+            <h2 className="text-3xl font-black text-slate-900 mb-3">Ready to Load Today's NFL Slate</h2>
+            <p className="text-slate-600 mb-8">Comprehensive research & strategy intelligence</p>
+            <button onClick={handleLoadSlate} className="px-8 py-4 bg-gradient-to-r from-green-500 to-green-600 text-white text-lg font-black rounded-xl hover:shadow-xl transition-all">Load NFL Slate</button>
+          </motion.div>
+        )}
 
-            <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">
-              NFL DFS
-            </h1>
+        {loadStatus === 'loading' && (
+          <div className="text-center py-20">
+            <div className="inline-block animate-spin text-6xl mb-4">⚡</div>
+            <h3 className="text-2xl font-black text-slate-900">Loading...</h3>
+          </div>
+        )}
 
-            <p className="text-xl md:text-2xl text-blue-200 mb-8 max-w-3xl mx-auto">
-              Dominate NFL DFS with expert Showdown and Classic lineup picks
-            </p>
+        {loadStatus === 'error' && (
+          <div className="text-center py-20">
+            <div className="text-6xl mb-4">⚠️</div>
+            <h3 className="text-2xl font-black text-red-600">Error: {error}</h3>
+            <button onClick={handleLoadSlate} className="mt-4 px-6 py-3 bg-slate-900 text-white font-bold rounded-lg">Retry</button>
+          </div>
+        )}
 
-            <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Link href="/picks?sport=NFL&type=showdown">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-xl text-lg transition-all shadow-lg"
-                >
-                  View NFL Showdown Picks
-                </motion.button>
-              </Link>
-              <Link href="/picks?sport=NFL&type=classic">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="bg-gray-800 hover:bg-gray-700 text-white font-bold py-4 px-8 rounded-xl text-lg transition-all border border-gray-700"
-                >
-                  View NFL Classic Picks
-                </motion.button>
-              </Link>
+        {loadStatus === 'loaded' && slateData && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8">
+            {/* Search */}
+            <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-5 relative">
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">🔍</span>
+                <input 
+                  type="text" 
+                  placeholder="Search players..."
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value)
+                    setShowSearchResults(e.target.value.length > 0)
+                  }}
+                  className="flex-1 text-lg font-semibold outline-none"
+                />
+                {searchQuery && <button onClick={() => { setSearchQuery(''); setShowSearchResults(false) }} className="text-slate-400">✕</button>}
+              </div>
+              {showSearchResults && searchResults.length > 0 && (
+                <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl border z-50 max-h-96 overflow-auto">
+                  {searchResults.map(p => (
+                    <div key={p.id} className="p-4 border-b hover:bg-blue-50 cursor-pointer">
+                      <div className="flex justify-between">
+                        <div><div className="font-black">{p.name}</div><div className="text-xs text-slate-600">{p.position} • {p.team}</div></div>
+                        <div className="text-right"><div className="font-black">{p.projection}</div><div className="text-xs">{p.ownership}% own</div></div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Featured Games */}
+            <div>
+              <h3 className="text-lg font-black mb-4">🔥 FEATURED GAMES</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {slateData.featuredGames.map(g => (
+                  <div key={g.id} className="bg-gradient-to-br from-slate-900 to-blue-900 rounded-xl p-5 border-2 border-orange-500">
+                    <div className="flex justify-between mb-4 text-white">
+                      <div className="text-center"><div className="text-2xl">{g.awayTeam.logo}</div><div className="font-black">{g.awayTeam.code}</div></div>
+                      <div className="text-center"><div className="text-2xl font-black text-amber-400">{g.vegasTotal}</div><div className="text-xs">{g.spread}</div></div>
+                      <div className="text-center"><div className="text-2xl">{g.homeTeam.logo}</div><div className="font-black">{g.homeTeam.code}</div></div>
+                    </div>
+                    <div className="text-xs text-slate-300 space-y-1">
+                      <div>Pace: {g.paceIndicator}</div>
+                      <div>{g.weather.icon} {g.weather.condition}</div>
+                      <div className="text-slate-200 leading-relaxed">{g.keyNote}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Headlines */}
+            <div>
+              <h3 className="text-lg font-black mb-4">📰 SLATE HEADLINES</h3>
+              <div className="space-y-2">
+                {slateData.slateHeadlines.map(h => (
+                  <div key={h.id} className={`border-l-4 rounded-lg p-3 ${h.severity === 'high' ? 'border-red-500 bg-red-50' : h.severity === 'positive' ? 'border-green-500 bg-green-50' : 'border-amber-500 bg-amber-50'}`}>
+                    <div className="flex justify-between"><span className="text-sm font-semibold">{h.text}</span><span className="text-xs text-slate-500">{h.timestamp}</span></div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Core Plays */}
+            <div>
+              <h3 className="text-lg font-black mb-4">⭐ CORE PLAYS</h3>
+              <div className="flex flex-wrap gap-3">
+                {slateData.corePlays.map(p => (
+                  <div key={p.id} style={{ background: 'linear-gradient(135deg, #FFF8E7, #FFE3B0)' }} className="px-4 py-3 rounded-xl border-2 border-amber-300">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-full bg-amber-500 text-white font-black text-xs flex items-center justify-center">{p.position}</div>
+                      <div><div className="font-black text-sm">{p.name}</div><div className="text-xs text-slate-600">{p.team} • {p.projection}</div></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Last Week Performance */}
+            <div>
+              <h3 className="text-2xl font-black mb-4">📈 LAST WEEK'S PERFORMANCE</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {slateData.lastWeekPerformance.slice(0, 6).map(p => (
+                  <div key={p.id} className="bg-white rounded-xl border p-5 shadow-md">
+                    <div className="flex justify-between mb-3">
+                      <div><div className="font-black text-lg">{p.name}</div><div className="text-xs text-slate-600">{p.position} • {p.team}</div></div>
+                      <div className="text-2xl font-black text-green-600">{p.fantasyPoints}</div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 mb-2">
+                      <div className="bg-slate-50 rounded p-2"><div className="text-xs text-slate-600">Snaps</div><div className="font-black">{p.snapsPercent}%</div></div>
+                      {p.touches > 0 && <div className="bg-slate-50 rounded p-2"><div className="text-xs text-slate-600">Touches</div><div className="font-black">{p.touches}</div></div>}
+                    </div>
+                    <div className="text-xs text-blue-800 bg-blue-50 rounded p-2">{p.efficiencyNote}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Strategy Modules */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div style={{ background: 'linear-gradient(135deg, #F0F9FF, #E0F2FE)' }} className="rounded-xl border-2 border-blue-300 p-6">
+                <h3 className="text-xl font-black text-blue-900 mb-4">💎 VALUE WATCHLIST</h3>
+                <div className="space-y-2">
+                  {slateData.valueWatchlist.tier1.map((p, i) => (
+                    <div key={i} className="bg-white rounded-lg p-3 border border-blue-200">
+                      <div className="flex justify-between mb-1"><span className="font-black">{p.name}</span><span className="font-black text-green-600">{p.value}</span></div>
+                      <div className="text-xs text-slate-600">{p.position} • ${p.salary} • {p.ownership}% own</div>
+                      <div className="text-xs text-blue-700 mt-1">{p.reason}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div style={{ background: 'linear-gradient(135deg, #ECFDF5, #D1FAE5)' }} className="rounded-xl border-2 border-green-300 p-6">
+                <h3 className="text-xl font-black text-green-900 mb-4">⚡ LEVERAGE WATCHLIST</h3>
+                <div className="space-y-2">
+                  {slateData.leverageWatchlist.map((p, i) => (
+                    <div key={i} className="bg-white rounded-lg p-3 border border-green-200">
+                      <div className="flex justify-between mb-1"><span className="font-black">{p.name}</span><span className="font-black text-green-600">{p.advantage}</span></div>
+                      <div className="text-xs text-slate-600">{p.position} • {p.ownership}% own • Lev +{p.leverage}</div>
+                      <div className="text-xs text-green-700 mt-1">{p.reason}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* LineupIQ Summary */}
+            <div className="bg-white rounded-xl shadow-lg border p-8">
+              <div className="flex items-start gap-4 mb-6">
+                <div className="text-5xl">🤖</div>
+                <div><h3 className="text-2xl font-black">LineupIQ's NFL Slate Summary</h3><p className="text-sm text-slate-600">Strategic intelligence in plain English</p></div>
+              </div>
+              <p className="text-slate-700 leading-relaxed whitespace-pre-line">{slateData.lineupiqSummary}</p>
+            </div>
+
+            {/* Contest Paths */}
+            <div>
+              <h3 className="text-2xl font-black mb-4">🎯 CONTEST PATHS</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {Object.entries(slateData.contestPaths).map(([key, path]) => (
+                  <div key={key} style={{ background: key === 'cash' ? 'linear-gradient(135deg, #ECFDF5, #D1FAE5)' : key === 'singleEntry' ? 'linear-gradient(135deg, #FFF8E7, #FFE3B0)' : 'linear-gradient(135deg, #EFF6FF, #DBEAFE)' }} className="rounded-xl border-2 p-6">
+                    <div className="text-center mb-4"><div className="text-4xl mb-2">{key === 'cash' ? '💰' : key === 'singleEntry' ? '🎯' : '🚀'}</div><div className="text-lg font-black">{path.format.split(' / ')[0]}</div></div>
+                    <div className="text-xs mb-3"><span className="font-bold">Core:</span> {path.coreList.slice(0, 3).join(', ')}</div>
+                    <div className="text-xs leading-relaxed">{path.guidance}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex flex-wrap justify-center gap-4">
+              <button onClick={() => router.push('/optimizer')} className="px-8 py-4 bg-gradient-to-r from-green-500 to-green-600 text-white text-lg font-black rounded-xl hover:shadow-xl transition-all">🚀 Send to Optimizer</button>
+              <button onClick={() => router.push('/sim')} className="px-8 py-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white text-lg font-black rounded-xl hover:shadow-xl transition-all">🎲 Run NFL Sim</button>
             </div>
           </motion.div>
-        </div>
-      </div>
-
-      {/* Current Season Info */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <SectionTitle title="2024-25 NFL Season" />
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
-          <StatCard
-            icon={CalendarIcon}
-            label="Season"
-            value="Week 14"
-            color="blue"
-          />
-          <StatCard
-            icon={TrophyIcon}
-            label="Teams"
-            value="32"
-            color="blue"
-          />
-          <StatCard
-            icon={FireIcon}
-            label="DFS Slates"
-            value="Weekly"
-            color="blue"
-          />
-        </div>
-
-        {/* NFL DFS Strategy */}
-        <SectionTitle title="NFL DFS Strategy" />
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
-          <StrategyCard
-            title="Showdown Format"
-            icon="⚡"
-            strategies={[
-              "Captain gets 1.5x points and salary - usually QB or RB",
-              "Target high-scoring games with O/U 45+",
-              "Stack QB with pass catchers for correlated upside",
-              "Consider game script - who's favored to score?",
-              "Contrarian Captains provide leverage in GPPs",
-              "Weather matters - wind affects passing games"
-            ]}
-          />
-          <StrategyCard
-            title="Classic Format"
-            icon="📊"
-            strategies={[
-              "Stack QB + 2 pass catchers from high-scoring teams",
-              "Target RBs with 20+ touch potential",
-              "Find value WRs with increased target share",
-              "Pay attention to Vegas totals and spreads",
-              "Dome games typically have higher scoring",
-              "Monitor injury reports for value opportunities"
-            ]}
-          />
-        </div>
-
-        {/* Key Positions */}
-        <SectionTitle title="Key Positions for NFL DFS" />
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-          <PositionCard
-            position="QB"
-            importance="Elite"
-            tips={[
-              "Most consistent scorers",
-              "Stack with your pass catchers",
-              "Target dome games",
-              "Look for QB vs bad pass D"
-            ]}
-            color="purple"
-          />
-          <PositionCard
-            position="RB"
-            importance="High"
-            tips={[
-              "Volume is king (20+ touches)",
-              "Goal line work crucial",
-              "Pass-catching backs in PPR",
-              "Avoid timeshares when possible"
-            ]}
-            color="green"
-          />
-          <PositionCard
-            position="WR"
-            importance="High"
-            tips={[
-              "Target share over 25%",
-              "WR1s in plus matchups",
-              "Slot WRs vs weak slot D",
-              "Stack with your QB"
-            ]}
-            color="blue"
-          />
-          <PositionCard
-            position="TE"
-            importance="Medium"
-            tips={[
-              "Top 3 TEs or punt",
-              "Target hogs in red zone",
-              "Plus matchups vs LBs",
-              "Leverage in GPPs"
-            ]}
-            color="orange"
-          />
-        </div>
-
-        {/* NFL DFS Quick Stats */}
-        <SectionTitle title="NFL DFS Quick Facts" />
-
-        <div className="bg-gray-800 rounded-xl border border-gray-700 p-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <QuickFact
-              title="Optimal Lineup Score"
-              value="Classic: 180-220pts | Showdown: 150-200pts"
-              icon={ChartBarIcon}
-            />
-            <QuickFact
-              title="Salary Cap"
-              value="Classic: $50,000 | Showdown: $50,000"
-              icon={BoltIcon}
-            />
-            <QuickFact
-              title="Roster Size"
-              value="Classic: 9 players | Showdown: 6 players"
-              icon={UserGroupIcon}
-            />
-            <QuickFact
-              title="Best Days"
-              value="Thursday, Sunday, Monday Night"
-              icon={CalendarIcon}
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* CTA Section */}
-      <div className="bg-gradient-to-r from-blue-900 to-blue-800 py-16">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl font-bold text-white mb-4">
-            Ready to Dominate NFL DFS?
-          </h2>
-          <p className="text-blue-100 text-lg mb-8">
-            Get access to daily expert picks, lineup analysis, and winning strategies
-          </p>
-          <Link href="/auth/signup">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="bg-white hover:bg-gray-100 text-blue-900 font-bold py-4 px-8 rounded-xl text-lg transition-all"
-            >
-              Start Free 7-Day Trial
-            </motion.button>
-          </Link>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function SectionTitle({ title }) {
-  const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.1 })
-
-  return (
-    <motion.h2
-      ref={ref}
-      initial={{ opacity: 0, x: -20 }}
-      animate={inView ? { opacity: 1, x: 0 } : {}}
-      className="text-4xl font-bold text-white mb-8"
-    >
-      {title}
-    </motion.h2>
-  )
-}
-
-function StatCard({ icon: Icon, label, value, color }) {
-  const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.1 })
-
-  const colors = {
-    blue: 'from-blue-900 to-blue-800 border-blue-700',
-    green: 'from-green-900 to-green-800 border-green-700',
-    purple: 'from-purple-900 to-purple-800 border-purple-700',
-    orange: 'from-orange-900 to-orange-800 border-orange-700'
-  }
-
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 20 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      whileHover={{ y: -5 }}
-      className={`bg-gradient-to-br ${colors[color]} rounded-xl p-6 border`}
-    >
-      <Icon className="h-8 w-8 text-white mb-3" />
-      <p className="text-gray-300 text-sm mb-1">{label}</p>
-      <p className="text-white text-3xl font-bold">{value}</p>
-    </motion.div>
-  )
-}
-
-function StrategyCard({ title, icon, strategies }) {
-  const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.1 })
-
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 20 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      className="bg-gray-800 rounded-xl border border-gray-700 p-8"
-    >
-      <div className="flex items-center mb-6">
-        <span className="text-5xl mr-4">{icon}</span>
-        <h3 className="text-2xl font-bold text-white">{title}</h3>
-      </div>
-      <ul className="space-y-3">
-        {strategies.map((strategy, idx) => (
-          <motion.li
-            key={idx}
-            initial={{ opacity: 0, x: -20 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ delay: idx * 0.1 }}
-            className="flex items-start text-gray-300"
-          >
-            <span className="text-blue-500 mr-3 mt-1">✓</span>
-            <span>{strategy}</span>
-          </motion.li>
-        ))}
-      </ul>
-    </motion.div>
-  )
-}
-
-function PositionCard({ position, importance, tips, color }) {
-  const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.1 })
-
-  const colors = {
-    purple: 'border-purple-600 bg-purple-900/20',
-    green: 'border-green-600 bg-green-900/20',
-    blue: 'border-blue-600 bg-blue-900/20',
-    orange: 'border-orange-600 bg-orange-900/20'
-  }
-
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={inView ? { opacity: 1, scale: 1 } : {}}
-      whileHover={{ scale: 1.05 }}
-      className={`bg-gray-800 rounded-xl border-2 ${colors[color]} p-6`}
-    >
-      <h3 className="text-3xl font-bold text-white mb-2">{position}</h3>
-      <p className="text-sm text-gray-400 mb-4">Importance: {importance}</p>
-      <ul className="space-y-2">
-        {tips.map((tip, idx) => (
-          <li key={idx} className="text-sm text-gray-300 flex items-start">
-            <span className="text-blue-400 mr-2">•</span>
-            {tip}
-          </li>
-        ))}
-      </ul>
-    </motion.div>
-  )
-}
-
-function QuickFact({ title, value, icon: Icon }) {
-  return (
-    <div className="flex items-start">
-      <Icon className="h-6 w-6 text-blue-400 mr-3 mt-1 flex-shrink-0" />
-      <div>
-        <p className="text-gray-400 text-sm mb-1">{title}</p>
-        <p className="text-white font-semibold">{value}</p>
+        )}
       </div>
     </div>
   )
